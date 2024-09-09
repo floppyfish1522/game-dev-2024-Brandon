@@ -5,66 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webcam Capture</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        video {
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-        }
-        input[type="text"] {
-            margin-bottom: 10px;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        video, canvas { display: block; margin: 0 auto; }
+        input, button { margin-top: 10px; }
     </style>
 </head>
 <body>
-    <video id="webcam" width="640" height="480" autoplay></video>
-    <input type="text" id="filename" placeholder="Enter file name" />
+    <h1>Webcam Capture</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <br>
+    <input type="text" id="filename" placeholder="Enter file name">
     <button id="capture">Capture Photo</button>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <a id="download" download>Download Photo</a>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const video = document.getElementById('webcam');
-            const captureButton = document.getElementById('capture');
-            const filenameInput = document.getElementById('filename');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const captureButton = document.getElementById('capture');
+        const downloadLink = document.getElementById('download');
+        const filenameInput = document.getElementById('filename');
 
-            // Request access to the webcam
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(err => {
-                    console.error('Error accessing webcam: ', err);
-                });
-
-            // Capture photo and download
-            captureButton.addEventListener('click', () => {
-                // Create a canvas element
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-
-                // Set canvas size to video size
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-
-                // Draw video frame onto canvas
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                // Get image data URL
-                const dataURL = canvas.toDataURL('image/jpeg');
-
-                // Create a link element
-                const link = document.createElement('a');
-                link.href = dataURL;
-                link.download = (filenameInput.value || 'snapshot') + '.jpg';
-                link.click();
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing the webcam: ', err);
             });
+
+        // Capture the photo
+        captureButton.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/jpeg');
+            const filename = filenameInput.value || 'photo';
+            downloadLink.href = dataURL;
+            downloadLink.download = `${filename}.jpg`;
+            downloadLink.click();
         });
     </script>
 </body>
