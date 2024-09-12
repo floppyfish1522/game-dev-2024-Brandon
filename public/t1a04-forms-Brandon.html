@@ -1,36 +1,99 @@
-<form>
-  <label for="name">Name:</label>
-  <input type="text" id="name" name="name"><br>
-  
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password"><br>
-  
-  <p>Choose your favorite color:</p>
-  <input type="radio" id="red" name="color" value="red">
-  <label for="red">Red</label>
-  <input type="radio" id="green" name="color" value="green">
-  <label for="green">Green</label>
-  <input type="radio" id="blue" name="color" value="blue">
-  <label for="blue">Blue</label><br><br>
-  
-  <p>Select your hobbies:</p>
-  <input type="checkbox" id="reading" name="hobby" value="reading">
-  <label for="reading">Reading</label>
-  <input type="checkbox" id="traveling" name="hobby" value="traveling">
-  <label for="traveling">Traveling</label>
-  <input type="checkbox" id="cooking" name="hobby" value="cooking">
-  <label for="cooking">Cooking</label><br><br>
-  
-  <label for="car">Choose a car:</label>
-  <select id="car" name="car">
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-    <option value="fiat">Fiat</option>
-    <option value="audi">Audi</option>
-  </select><br><br>
-  
-  <label for="message">Message:</label><br>
-  <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
-  
-  <input type="submit" value="Submit">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complex Questionnaire</title>
+  <style>
+    form {
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    .form-section {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <div class="form-section">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    
+    <div class="form-section">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    
+    <div class="form-section">
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" name="dob" required>
+    </div>
+    
+    <div class="form-section">
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="">Select...</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    
+    <div class="form-section">
+      <p>Choose your favorite color:</p>
+      <input type="radio" id="red" name="color" value="red" required>
+      <label for="red">Red</label>
+      <input type="radio" id="green" name="color" value="green">
+      <label for="green">Green</label>
+      <input type="radio" id="blue" name="color" value="blue">
+      <label for="blue">Blue</label>
+    </div>
+    
+    <div class="form-section">
+      <p>Select your hobbies:</p>
+      <input type="checkbox" id="reading" name="hobby" value="reading">
+      <label for="reading">Reading</label>
+      <input type="checkbox" id="traveling" name="hobby" value="traveling">
+      <label for="traveling">Traveling</label>
+      <input type="checkbox" id="cooking" name="hobby" value="cooking">
+      <label for="cooking">Cooking</label>
+    </div>
+    
+    <div class="form-section">
+      <label for="car">Choose a car:</label>
+      <select id="car" name="car" required>
+        <option value="">Select...</option>
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="fiat">Fiat</option>
+        <option value="audi">Audi</option>
+      </select>
+    </div>
+    
+    <div class="form-section">
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" rows="4" cols="50" required></textarea>
+    </div>
+    
+    <div class="form-section">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    
+    <div class="form-section">
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+</body>
+</html>
