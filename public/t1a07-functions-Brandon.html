@@ -1,14 +1,55 @@
-<h1 align=center>t1a07-functions-Brandon</h1>
-
+<html>
+<head>
+  <title>Functions</title>
+</head>
+<body>
 <script>
-  function myVar(myIn){
-    return document.getElementById(myIn)
+  function myVar(myIn) {
+    return document.getElementById(myIn);
+  }
+
+  function clearInput() {
+    myVar('myFirstName').value = '';
+  }
+
+  function changeColor() {
+    myVar('myDiv01').style.color = 'blue';
+  }
+
+  function toggleVisibility() {
+    let div = myVar('myDiv01');
+    if (div.style.display === 'none') {
+      div.style.display = 'block';
+    } else {
+      div.style.display = 'none';
+    }
+  }
+
+  function appendText() {
+    myVar('myDiv01').innerHTML += ' Welcome to the site!';
+  }
+
+  function showDateTime() {
+    let now = new Date();
+    myVar('myDiv01').innerHTML = 'Current Date and Time: ' + now.toString();
   }
 </script>
 
-input:<input type=text id="myFirstName" value="Brandon">
-<input type=button value="Show on page" onclick="{
-  myVar('myDiv01').innerHTML = 'your name is ' + myVar('myFirstName').value
-  }">
+<h1 align="center">t1a07-functions-Brandon</h1>
+
+<input type="text" id="myFirstName" value="Brandon">
+<input type="button" value="Show on page" onclick="{
+  myVar('myDiv01').innerHTML = 'Your name is ' + myVar('myFirstName').value
+}">
+
+<input type="button" value="Clear" onclick="clearInput()">
+<input type="button" value="Change Color" onclick="changeColor()">
+<input type="button" value="Toggle Visibility" onclick="toggleVisibility()">
+<input type="button" value="Append Text" onclick="appendText()">
+<input type="button" value="Show Date and Time" onclick="showDateTime()">
 
 <div id="myDiv01">...</div>
+
+</body>
+</html>
+
