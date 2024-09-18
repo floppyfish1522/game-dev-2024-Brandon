@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Dodge Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #gameArea {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #fff;
+            border: 2px solid #000;
+        }
+        .obstacle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameArea"></div>
+
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const obstacles = [];
+        let gameOver = false;
+
+        function createObstacle() {
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+            obstacle.style.top = `${Math.random() * (gameArea.clientHeight - 50)}px`;
+            obstacle.style.left = `${Math.random() * (gameArea.clientWidth - 50)}px`;
+            gameArea.appendChild(obstacle);
+            obstacles.push(obstacle);
+        }
+
+        function moveObstacles() {
+            if (gameOver) return;
+
+            obstacles.forEach(obstacle => {
+                const direction = Math.random() < 0.5 ? -1 : 1;
+                const speed = Math.random() * 5 + 1;
+                obstacle.style.top = `${parseFloat(obstacle.style.top) + direction * speed}px`;
+                obstacle.style.left = `${parseFloat(obstacle.style.left) + direction * speed}px`;
+
+                if (parseFloat(obstacle.style.top) < 0 || parseFloat(obstacle.style.top) > gameArea.clientHeight - 50) {
+                    obstacle.style.top = `${Math.random() * (gameArea.clientHeight - 50)}px`;
+                }
+                if (parseFloat(obstacle.style.left) < 0 || parseFloat(obstacle.style.left) > gameArea.clientWidth - 50) {
+                    obstacle.style.left = `${Math.random() * (gameArea.clientWidth - 50)}px`;
+                }
+            });
+
+            requestAnimationFrame(moveObstacles);
+        }
+
+        function checkCollision(event) {
+            const cursorX = event.clientX - gameArea.offsetLeft;
+            const cursorY = event.clientY - gameArea.offsetTop;
+
+            obstacles.forEach(obstacle => {
+                const rect = obstacle.getBoundingClientRect();
+                if (
+                    cursorX > rect.left - gameArea.offsetLeft &&
+                    cursorX < rect.right - gameArea.offsetLeft &&
+                    cursorY > rect.top - gameArea.offsetTop &&
+                    cursorY < rect.bottom - gameArea.offsetTop
+                ) {
+                    gameOver = true;
+                    alert('Game Over!');
+                }
+            });
+        }
+
+        gameArea.addEventListener('mousemove', checkCollision);
+
+        for (let i = 0; i < 10; i++) {
+            createObstacle();
+        }
+
+        moveObstacles();
+    </script>
+</body>
+</html>
