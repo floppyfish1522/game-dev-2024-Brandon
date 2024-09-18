@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #game {
+            max-width: 600px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Adventure Game</h1>
+        <p id="story">You find yourself in a dark forest. There are paths to the left and right. Which way do you go?</p>
+        <button onclick="choose('left')">Go Left</button>
+        <button onclick="choose('right')">Go Right</button>
+    </div>
 
+    <script>
+        function choose(direction) {
+            const story = document.getElementById('story');
+            if (direction === 'left') {
+                story.innerHTML = 'You encounter a wild animal! Do you fight or run?';
+                document.querySelectorAll('button')[0].innerText = 'Fight';
+                document.querySelectorAll('button')[1].innerText = 'Run';
+                document.querySelectorAll('button')[0].onclick = () => choose('fight');
+                document.querySelectorAll('button')[1].onclick = () => choose('run');
+            } else if (direction === 'right') {
+                story.innerHTML = 'You find a treasure chest! Do you open it or leave it?';
+                document.querySelectorAll('button')[0].innerText = 'Open';
+                document.querySelectorAll('button')[1].innerText = 'Leave';
+                document.querySelectorAll('button')[0].onclick = () => choose('open');
+                document.querySelectorAll('button')[1].onclick = () => choose('leave');
+            } else if (direction === 'fight') {
+                story.innerHTML = 'You bravely fight the animal and win! You are a hero!';
+                document.querySelectorAll('button')[0].style.display = 'none';
+                document.querySelectorAll('button')[1].style.display = 'none';
+            } else if (direction === 'run') {
+                story.innerHTML = 'You run away safely, but you feel like a coward.';
+                document.querySelectorAll('button')[0].style.display = 'none';
+                document.querySelectorAll('button')[1].style.display = 'none';
+            } else if (direction === 'open') {
+                story.innerHTML = 'You open the chest and find a pile of gold! You are rich!';
+                document.querySelectorAll('button')[0].style.display = 'none';
+                document.querySelectorAll('button')[1].style.display = 'none';
+            } else if (direction === 'leave') {
+                story.innerHTML = 'You leave the chest and continue your journey, wondering what could have been.';
+                document.querySelectorAll('button')[0].style.display = 'none';
+                document.querySelectorAll('button')[1].style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
