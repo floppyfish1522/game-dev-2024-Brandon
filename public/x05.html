@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Slot Machine Game</title>
+    <title>High Risk Plinko Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f0f0f0;
         }
-        #slotMachine {
+        #plinkoBoard {
             margin: 50px auto;
-            width: 300px;
-            height: 200px;
+            width: 400px;
+            height: 500px;
+            position: relative;
             border: 2px solid #333;
             background-color: #fff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 2em;
+        }
+        .peg {
+            width: 10px;
+            height: 10px;
+            background-color: #333;
+            border-radius: 50%;
+            position: absolute;
         }
         .slot {
-            width: 80px;
-            height: 80px;
-            border: 2px solid #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 40px;
+            height: 50px;
             background-color: #eee;
+            border: 2px solid #333;
+            position: absolute;
+            bottom: 0;
         }
-        #spinButton {
+        #ball {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 190px;
+        }
+        #dropButton {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 1.2em;
@@ -40,45 +52,81 @@
     </style>
 </head>
 <body>
-    <h1>Slot Machine Game</h1>
-    <div id="slotMachine">
-        <div class="slot" id="slot1">7</div>
-        <div class="slot" id="slot2">7</div>
-        <div class="slot" id="slot3">7</div>
+    <h1>High Risk Plinko Game</h1>
+    <div id="plinkoBoard">
+        <div id="ball"></div>
+        <!-- Pegs -->
+        <div class="peg" style="top: 50px; left: 50px;"></div>
+        <div class="peg" style="top: 50px; left: 150px;"></div>
+        <div class="peg" style="top: 50px; left: 250px;"></div>
+        <div class="peg" style="top: 50px; left: 350px;"></div>
+        <!-- More pegs can be added here -->
+        <!-- Slots -->
+        <div class="slot" style="left: 0;" data-payout="100"></div>
+        <div class="slot" style="left: 45px;" data-payout="50"></div>
+        <div class="slot" style="left: 90px;" data-payout="20"></div>
+        <div class="slot" style="left: 135px;" data-payout="10"></div>
+        <div class="slot" style="left: 180px;" data-payout="500"></div>
+        <div class="slot" style="left: 225px;" data-payout="10"></div>
+        <div class="slot" style="left: 270px;" data-payout="20"></div>
+        <div class="slot" style="left: 315px;" data-payout="50"></div>
+        <div class="slot" style="left: 360px;" data-payout="100"></div>
     </div>
-    <button id="spinButton">Spin</button>
+    <button id="dropButton">Drop Ball</button>
     <div id="message"></div>
 
     <script>
-        const slot1 = document.getElementById('slot1');
-        const slot2 = document.getElementById('slot2');
-        const slot3 = document.getElementById('slot3');
+        const ball = document.getElementById('ball');
+        const plinkoBoard = document.getElementById('plinkoBoard');
+        const dropButton = document.getElementById('dropButton');
         const message = document.getElementById('message');
-        const spinButton = document.getElementById('spinButton');
+        let balance = 100; // Starting balance
 
-        const symbols = ['🍒', '🍋', '🍊', '🍉', '7'];
+        function dropBall() {
+            let ballPosition = { x: 190, y: 0 };
+            const interval = setInterval(() => {
+                ballPosition.y += 5;
+                ball.style.top = ballPosition.y + 'px';
+                ball.style.left = ballPosition.x + 'px';
 
-        function getRandomSymbol() {
-            return symbols[Math.floor(Math.random() * symbols.length)];
+                // Check for collision with pegs
+                document.querySelectorAll('.peg').forEach(peg => {
+                    const pegRect = peg.getBoundingClientRect();
+                    const ballRect = ball.getBoundingClientRect();
+                    if (ballRect.top < pegRect.bottom && ballRect.bottom > pegRect.top &&
+                        ballRect.left < pegRect.right && ballRect.right > pegRect.left) {
+                        ballPosition.x += (Math.random() > 0.5 ? 10 : -10);
+                    }
+                });
+
+                // Check if ball has reached the bottom
+                if (ballPosition.y >= 450) {
+                    clearInterval(interval);
+                    checkSlot(ballPosition.x);
+                }
+            }, 20);
         }
 
-        function spinSlots() {
-            const result1 = getRandomSymbol();
-            const result2 = getRandomSymbol();
-            const result3 = getRandomSymbol();
+        function checkSlot(x) {
+            document.querySelectorAll('.slot').forEach(slot => {
+                const slotRect = slot.getBoundingClientRect();
+                if (x >= slotRect.left && x <= slotRect.right) {
+                    const payout = parseInt(slot.getAttribute('data-payout'));
+                    balance += payout;
+                    message.textContent = `You won $${payout}! Current balance: $${balance}`;
+                }
+            });
+        }
 
-            slot1.textContent = result1;
-            slot2.textContent = result2;
-            slot3.textContent = result3;
-
-            if (result1 === result2 && result2 === result3) {
-                message.textContent = 'Jackpot! You win!';
+        dropButton.addEventListener('click', () => {
+            if (balance > 0) {
+                balance -= 10; // Cost to play
+                message.textContent = `Current balance: $${balance}`;
+                dropBall();
             } else {
-                message.textContent = 'Try again!';
+                message.textContent = 'Insufficient balance!';
             }
-        }
-
-        spinButton.addEventListener('click', spinSlots);
+        });
     </script>
 </body>
 </html>
