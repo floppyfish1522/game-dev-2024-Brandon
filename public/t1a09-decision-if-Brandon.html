@@ -1,1 +1,26 @@
+<h1 align=center>t1a09-decisions-if-Brandon</h1>
 
+
+Input:<input type=text id="myText1" value="Brandon">
+Input:<input type=number id="myNum1" value="14">
+<div id="myDiv01">...</div>
+
+<input type=button value="Is Brandon" onclick="{
+  let myIn1 = document.getElementById('myText1').value
+  document.getElementById('myDiv01').innerHTML = '<br>'
+  if (myIn1 == 'Brandon'){
+    document.getElementById('myDiv01').innerHTML = 'Hi Brandon'
+    }
+  }"><br>
+
+<input type=button value="Is Brandon" onclick="{
+  let myIn1 = document.getElementById('myText1').value
+  document.getElementById('myDiv01').innerHTML = '<br>'
+  if (myIn1 == 'Brandon'){
+    document.getElementById('myDiv01').innerHTML = 'Hi Brandon'
+    } else{
+      document.getElementById('myDiv01').innerHTML = 'I was expecting Brandon :('
+  }
+  }"><br>
+
+  
