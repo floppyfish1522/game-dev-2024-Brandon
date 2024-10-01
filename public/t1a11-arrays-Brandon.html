@@ -2,6 +2,7 @@
 <script>
   let myMax = 6
   let myArray = new Array(myMax)
+  let currentIndex = 3
 </script>
 
 Input:<input type=text id="myFirstName" value="Brandon"><br>
@@ -28,5 +29,17 @@ Input:<input type=text id="myFirstName" value="Brandon"><br>
   document.getElementById('myDiv01').innerHTML = 'Array cleared';
 }">
 
+New Element: <input type=text id="newElement"><br>
+
+<input type=button value="Add to Array" onclick="{
+  let newElement = document.getElementById('newElement').value;
+  if (currentIndex < myMax) {
+    myArray[currentIndex] = newElement;
+    currentIndex++;
+    document.getElementById('myDiv01').innerHTML = 'Element added: ' + newElement;
+  } else {
+    document.getElementById('myDiv01').innerHTML = 'Array is full';
+  }
+}"><br>
 
 <div id="myDiv01">...</div>
