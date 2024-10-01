@@ -21,4 +21,12 @@ Input:<input type=text id="myFirstName" value="Brandon"><br>
   }
 }"><br>
 
+<input type=button value="Clear Array" onclick="{
+  for (let i = 0; i < myArray.length; i++) {
+    myArray[i] = null;
+  }
+  document.getElementById('myDiv01').innerHTML = 'Array cleared';
+}">
+
+
 <div id="myDiv01">...</div>
