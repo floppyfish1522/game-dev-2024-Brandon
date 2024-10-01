@@ -2,7 +2,6 @@
 <script>
   let myMax = 6;
   let myArray = new Array(myMax);
-  let currentIndex = 3; // Start after the initial 3 elements
 </script>
 
 Input:<input type=text id="myFirstName" value="Brandon"><br>
@@ -17,10 +16,8 @@ Input:<input type=text id="myFirstName" value="Brandon"><br>
 
 <input type=button value="Show Array" onclick="{
   document.getElementById('myDiv01').innerHTML = '';
-  for (let myLoop = 0; myLoop < myArray.length; myLoop++) {
-    if (myArray[myLoop] !== undefined && myArray[myLoop] !== null) {
-      document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' + myArray[myLoop] + '<br>';
-    }
+  for (let myLoop = 0; myLoop < 3; myLoop++) {
+    document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' + myArray[myLoop] + '<br>';
   }
 }"><br>
 
@@ -29,20 +26,6 @@ Input:<input type=text id="myFirstName" value="Brandon"><br>
     myArray[i] = null;
   }
   document.getElementById('myDiv01').innerHTML = 'Array cleared';
-  currentIndex = 0; // Reset the index
-}"><br>
-
-New Element: <input type=text id="newElement"><br>
-
-<input type=button value="Add to Array" onclick="{
-  let newElement = document.getElementById('newElement').value;
-  if (currentIndex < myMax) {
-    myArray[currentIndex] = newElement;
-    currentIndex++;
-    document.getElementById('myDiv01').innerHTML = 'Element added: ' + newElement;
-  } else {
-    document.getElementById('myDiv01').innerHTML = 'Array is full';
-  }
 }"><br>
 
 <div id="myDiv01">...</div>
