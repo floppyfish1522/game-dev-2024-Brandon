@@ -7,17 +7,19 @@
 Input:<input type="text" id="myFirstName" value="Brandon"><br>
 
 <input type="button" value="Set Array" onclick="{
-  myArray[0] = 'Brandon';
-  myArray[1] = 'Kyle';
-  myArray[2] = 'Andy';
+  myArray = 'Brandon';
+  myArray = 'Kyle';
+  myArray = 'Andy';
 
   document.getElementById('myDiv01').innerHTML = 'You set the array';
 }"><br>
 
 <input type="button" value="Show Array" onclick="{
   document.getElementById('myDiv01').innerHTML = '';
-  for (let myLoop = 0; myLoop < 3; myLoop++) {
-    document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' + myArray[myLoop] + '<br>';
+  for (let myLoop = 0; myLoop < myArray.length; myLoop++) {
+    if (myArray[myLoop] !== undefined && myArray[myLoop] !== null) {
+      document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' + myArray[myLoop] + '<br>';
+    }
   }
 }"><br>
 
@@ -68,3 +70,4 @@ Input:<input type="text" id="myFirstName" value="Brandon"><br>
 }"><br>
 
 <div id="myDiv01">...</div>
+
