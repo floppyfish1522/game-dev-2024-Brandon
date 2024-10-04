@@ -2,8 +2,17 @@
 
 <script>
   function myShowJSON(){
-    document.getElementById('myDiv1').innerHTML = 'Sent'${myIn}
+    document.getElementById('myDiv1').innerHTML = 'Sent: ${myIn}'
   }
+
+async function fetchData(){
+  const responce = await fetch('https://dog.ceo/api/breeds/image/random');
+  const data = await response.json();
+  console.log(data);
+  console.log('data.status: ${data.status}')
+
+  const myJson = await JSON.stringify(data, null, 2);
+  document.getElementById('myDiv1').innerHTML = myJson
 </script>
 
 Explantation of JSON compared to Javascript objects in this textarea<br><br>
@@ -18,8 +27,11 @@ Enter a json returning URL: <input type=text id="myText1" value= "https://random
 <select size=1 onchange="myShowJSON(this.value)">
 <option value="https://randomfox.ca/floof/">randomfox
 <option value="https://dog.ceo/api/breeds/image/random">dog.ceo
+<option value="https://catfact.ninja/fact">catfact
+<option value="http://numbersapi.com/random/trivia?json">trivia
+<option value="https://api.adviceslip.com/advice">adviceslip
 </select><br><br>
 
-you make the JSON show up in the DIV<br><br>
+you make the JSON show up in the DIV, and include many more URL's in the select box<br><br>
 
 <div id="myDiv1">...</div>
