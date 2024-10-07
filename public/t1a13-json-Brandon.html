@@ -1,38 +1,40 @@
-<h1 align=center>t1a13-json-Brandon</h1>
+<h1 align="center">t1a13-json-Brandon</h1>
 
 <script>
   function myShowJSON(myIn){
-    document.getElementById('myDiv1').innerHTML = 'Sent: ${myIn} '
+    document.getElementById('myDiv1').innerHTML = `Sent: ${myIn}`;
   }
 
-async function fetchData(){
-  const responce = await fetch('https://dog.ceo/api/breeds/image/random');
-  const data = await response.json();
-  console.log(data);
-  console.log('data.status: ${data.status}')
+  async function fetchData(){
+    const url = document.getElementById('myText1').value;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    console.log(`data.status: ${data.status}`);
 
-  const myJson = await JSON.stringify(data, null, 2);
-  document.getElementById('myDiv1').innerHTML = myJson
-}
+    const myJson = JSON.stringify(data, null, 2);
+    document.getElementById('myDiv1').innerHTML = `<pre>${myJson}</pre>`;
+  }
 </script>
 
-Explantation of JSON compared to Javascript objects in this textarea<br><br>
+Explanation of JSON compared to JavaScript objects in this textarea<br><br>
 
-<textarea cols=70 ROWS=5>
-
+<textarea cols="70" rows="5">
+JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write, and easy for machines to parse and generate. It is based on a subset of JavaScript, but it is language-independent. JSON is often used for transmitting data in web applications.
 </textarea><br><br>
 
-Enter a json returning URL: <input type=text id="myText1" value= "https://randomfox.ca/floof/">
-<input type=button value="show JSON" onClick="{fetchData()}"><br><br>
+Enter a JSON returning URL: <input type="text" id="myText1" value="https://randomfox.ca/floof/">
+<input type="button" value="Show JSON" onClick="fetchData()"><br><br>
 
-<select size=1 onchange="myShowJSON(this.value)">
-<option value="https://randomfox.ca/floof/">randomfox
-<option value="https://dog.ceo/api/breeds/image/random">dog.ceo
-<option value="https://catfact.ninja/fact">catfact
-<option value="http://numbersapi.com/random/trivia?json">trivia
-<option value="https://api.adviceslip.com/advice">adviceslip
+<select size="1" onchange="document.getElementById('myText1').value = this.value">
+  <option value="https://randomfox.ca/floof/">randomfox</option>
+  <option value="https://dog.ceo/api/breeds/image/random">dog.ceo</option>
+  <option value="https://catfact.ninja/fact">catfact</option>
+  <option value="http://numbersapi.com/random/trivia?json">trivia</option>
+  <option value="https://api.adviceslip.com/advice">adviceslip</option>
+  <option value="https://api.chucknorris.io/jokes/random">chucknorris</option>
+  <option value="https://api.coindesk.com/v1/bpi/currentprice.json">coindesk</option>
+  <option value="https://api.spacexdata.com/v4/launches/latest">spacex</option>
 </select><br><br>
-
-you make the JSON show up in the DIV, and include many more URL's in the select box<br><br>
 
 <div id="myDiv1">...</div>
