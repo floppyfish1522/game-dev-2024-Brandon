@@ -14,6 +14,12 @@
 
     const myJson = JSON.stringify(data, null, 2);
     document.getElementById('myDiv1').innerHTML = `<pre>${myJson}</pre>`;
+
+    if (data.message) {
+      document.getElementById('myDiv1').innerHTML += `<img src="${data.message}" alt="Image" style="max-width: 100%; height: auto;">`;
+    } else if (data.image) {
+      document.getElementById('myDiv1').innerHTML += `<img src="${data.image}" alt="Image" style="max-width: 100%; height: auto;">`;
+    }
   }
 </script>
 
