@@ -7,15 +7,15 @@
     const data = await response.json();
     console.log(data);
 
-    // Display the type of joke
-    let jokeType = `<p>Type: ${data.type}</p>`;
+    // Display the category of joke
+    let jokeCategory = `<p>Category: ${data.category}</p>`;
 
     // Check if the joke is a single or two-part joke
     if (data.type === "single") {
-      document.getElementById('myDiv1').innerHTML = `${jokeType}<p>${data.joke}</p>`;
+      document.getElementById('myDiv1').innerHTML = `${jokeCategory}<p>${data.joke}</p>`;
     } else if (data.type === "twopart") {
       document.getElementById('myDiv1').innerHTML = `
-        ${jokeType}
+        ${jokeCategory}
         <p>${data.setup}</p>
         <button onclick="showPunchline()">Show Punchline</button>
         <div id="punchline" style="display:none;"><p>${data.delivery}</p></div>
@@ -24,7 +24,7 @@
   }
 
   function showPunchline() {
-    document.getElementById('Punchline').style.display = 'block';
+    document.getElementById('punchline').style.display = 'block';
   }
 </script>
 
@@ -50,4 +50,3 @@ Enter a JSON returning URL: <input type="text" id="myText1" value="https://v2.jo
 </select><br><br>
 
 <div id="myDiv1">...</div>
-
