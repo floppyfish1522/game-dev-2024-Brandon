@@ -1,25 +1,26 @@
 <h1 align="center">t1a13-json-Brandon</h1>
 
 <script>
-  function myShowJSON(myIn){
-    document.getElementById('myDiv1').innerHTML = `Sent: ${myIn}`;
-  }
-
-  async function fetchData(){
+  async function fetchData() {
     const url = document.getElementById('myText1').value;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
-    console.log(`data.status: ${data.status}`);
 
-    const myJson = JSON.stringify(data, null, 2);
-    document.getElementById('myDiv1').innerHTML = `<pre>${myJson}</pre>`;
-
-    if (data.message) {
-      document.getElementById('myDiv1').innerHTML += `<img src="${data.message}" alt="Image" style="max-width: 100%; height: auto;">`;
-    } else if (data.image) {
-      document.getElementById('myDiv1').innerHTML += `<img src="${data.image}" alt="Image" style="max-width: 100%; height: auto;">`;
+    // Check if the joke is a single or two-part joke
+    if (data.type === "single") {
+      document.getElementById('myDiv1').innerHTML = `<p>${data.joke}</p>`;
+    } else if (data.type === "twopart") {
+      document.getElementById('myDiv1').innerHTML = `
+        <p>${data.setup}</p>
+        <button onclick="showPunchline('${data.delivery}')">Show Punchline</button>
+        <div id="punchline" style="display:none;"><p>${data.delivery}</p></div>
+      `;
     }
+  }
+
+  function showPunchline(punchline) {
+    document.getElementById('punchline').style.display = 'block';
   }
 </script>
 
@@ -28,7 +29,7 @@ Explanation of JSON compared to JavaScript objects in this textarea<br><br>
 <textarea cols="70" rows="5">
 </textarea><br><br>
 
-Enter a JSON returning URL: <input type="text" id="myText1" value="https://randomfox.ca/floof/">
+Enter a JSON returning URL: <input type="text" id="myText1" value="https://v2.jokeapi.dev/joke/Any">
 <input type="button" value="Show JSON" onClick="fetchData()"><br><br>
 
 <select size="1" onchange="document.getElementById('myText1').value = this.value">
