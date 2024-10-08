@@ -21,24 +21,6 @@
       document.getElementById('myDiv1').innerHTML += `<img src="${data.image}" alt="Image" style="max-width: 100%; height: auto;">`;
     }
   }
-  function revealPunchline() {
-            document.getElementById('delivery').style.display = 'block';
-        }
-
-        function checkJokeURL() {
-            const jokeURLs = [
-                "https://v2.jokeapi.dev/joke/Any",
-                "https://api.chucknorris.io/jokes/random"
-            ];
-            const selectedURL = document.getElementById('myText1').value;
-            const getJokeButton = document.getElementById('getJokeButton');
-            if (jokeURLs.includes(selectedURL)) {
-                getJokeButton.style.display = 'block';
-            } else {
-                getJokeButton.style.display = 'none';
-            }
-        }
-    </script>
 </script>
 
 Explanation of JSON compared to JavaScript objects in this textarea<br><br>
@@ -57,18 +39,9 @@ Enter a JSON returning URL: <input type="text" id="myText1" value="https://rando
   <option value="https://api.chucknorris.io/jokes/random">chucknorris</option>
   <option value="https://api.spacexdata.com/v4/launches/latest">spacex</option>
   <option value="https://https://www.boredapi.com/api/activity">bored</option>
-  <option value="https://api.openweathermap.org/data/2.5/weather?q=Londonappid=YOUR_API_KEY">https://openweathermap</option>
+  <option value="https://api.openweathermap.org/data/2.5/weather?q=London&appid=YOUR_API_KEY">https://openweathermap</option>
   <option value="https://v2.jokeapi.dev/joke/Any">joke</option>
   <option value="https://api.apis.guru/v2/list.json">https://guru</option>
 </select><br><br>
-
-
-   <div class="joke-container">
-        <p id="setup"></p>
-        <p id="delivery" style="display: none;"></p>
-        <p id="category"></p>
-        <button id="getJokeButton" onclick="fetchJoke()" style="display: none;">Get a Joke</button>
-        <button id="revealPunchlineButton" style="display: none;" onclick="revealPunchline()">Reveal Punchline</button>
-   </div>
 
 <div id="myDiv1">...</div>
