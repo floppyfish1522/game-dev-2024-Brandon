@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joke Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .joke-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .joke-container p {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="joke-container">
+        <p id="setup"></p>
+        <p id="delivery" style="display: none;"></p>
+        <p id="category"></p>
+        <button id="getJokeButton" onclick="fetchJoke()">Get a Joke</button>
+        <button id="revealPunchlineButton" style="display: none;" onclick="revealPunchline()">Reveal Punchline</button>
+    </div>
 
+    <script>
+        async function fetchJoke() {
+            try {
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any');
+                const data = await response.json();
+                document.getElementById('setup').textContent = data.setup || data.joke;
+                document.getElementById('delivery').textContent = data.delivery || '';
+                document.getElementById('category').textContent = `Category: ${data.category}`;
+                document.getElementById('delivery').style.display = 'none';
+                document.getElementById('revealPunchlineButton').style.display = data.delivery ? 'block' : 'none';
+            } catch (error) {
+                console.error('Error fetching joke:', error);
+            }
+        }
+
+        function revealPunchline() {
+            document.getElementById('delivery').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
