@@ -44,4 +44,12 @@ Enter a JSON returning URL: <input type="text" id="myText1" value="https://rando
   <option value="https://api.apis.guru/v2/list.json">https://guru</option>
 </select><br><br>
 
+    <div class="joke">
+        <p id="setup"></p>
+        <p id="delivery" style="display: none;"></p>
+        <p id="category"></p>
+        <button id="getJokeButton" onclick="fetchJoke()">Get a Joke</button>
+        <button id="revealPunchlineButton" style="display: none;" onclick="revealPunchline()">Reveal Punchline</button>
+    </div>
+
 <div id="myDiv1">...</div>
