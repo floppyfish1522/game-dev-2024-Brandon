@@ -7,10 +7,8 @@
     const data = await response.json();
     console.log(data);
 
-    // Display the category of joke
     let jokeCategory = `<p>Category: ${data.category}</p>`;
 
-    // Check if the joke is a single or two-part joke
     if (data.type === "single") {
       document.getElementById('myDiv1').innerHTML = `${jokeCategory}<p>${data.joke}</p>`;
     } else if (data.type === "twopart") {
