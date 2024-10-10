@@ -7,6 +7,7 @@
     const data = await response.json();
     console.log(data);
 
+  if ('myText1' = 'https://v2.jokeapi.dev/joke/Any'){
     let jokeCategory = `<p>Category: ${data.category}</p>`;
 
     if (data.type === "single") {
@@ -19,10 +20,10 @@
         <div id="punchline" style="display:none;"><p>${data.delivery}</p></div>
       `;
     }
-  }
 
   function showPunchline() {
     document.getElementById('punchline').style.display = 'block';
+  }
   }
 </script>
 
