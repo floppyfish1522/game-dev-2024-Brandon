@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Events Example</title>
+    <style>
+        .box { width: 200px; height: 100px; border: 1px solid black; margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body onload="alert('Page loaded!')" onresize="alert('Window resized!')">
+
+    <input type="text" onchange="alert('Value changed!')" onfocus="this.style.background='yellow'" onblur="this.style.background='white'" onkeydown="alert('Key pressed!')" onkeyup="alert('Key released!')" oninput="alert('Input changed!')">
+
+    <button onclick="alert('Button clicked!')" ondblclick="alert('Button double-clicked!')" onmousedown="alert('Mouse button pressed!')" onmouseup="alert('Mouse button released!')">Click Me</button>
+
+    <div class="box" onmouseover="this.style.background='lightblue'" onmouseout="this.style.background=''" onscroll="alert('Scrolling!')" ondragstart="alert('Drag started!')" ondrop="alert('Dropped!')" ondragover="event.preventDefault()">Hover, Scroll, Drag or Drop here</div>
+
+    <input type="text" oncopy="alert('Content copied!')" oncut="alert('Content cut!')" onpaste="alert('Content pasted!')">
+
+    <form onsubmit="alert('Form submitted!'); return false;">
+        <input type="submit" value="Submit">
+    </form>
+
+    <div oncontextmenu="alert('Context menu opened!'); return false;">Right-click me</div>
+
+</body>
+</html>
