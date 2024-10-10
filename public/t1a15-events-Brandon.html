@@ -1,1 +1,125 @@
 <h1 align=center>t1a15-events-Brandon</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard and Mouse Diagram</title>
+    <style>
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(14, 40px);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .key {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+        .mouse {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .mouse-button {
+            width: 60px;
+            height: 30px;
+            border: 1px solid black;
+            margin: 5px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body onload="alert('Page loaded!')" onresize="alert('Window resized!')">
+
+    <div class="keyboard">
+      <div class="key">Esc</div>
+        <!-- Add more keys as needed -->
+      <div class="key">F1</div>
+      <div class="key">F2</div>
+      <div class="key">F3</div>
+      <div class="key">F4</div>
+      <div class="key">F5</div>
+      <div class="key">F6</div>
+      <div class="key">F7</div>
+      <div class="key">F8</div>
+      <div class="key">F9</div>
+      <div class="key">F10</div>
+      <div class="key">F11</div>
+      <div class="key">F12</div>
+      <Br>
+      <div class="key">`</div>
+      <div class="key">1</div>
+      <div class="key">2</div>
+      <div class="key">3</div>
+      <div class="key">4</div>
+      <div class="key">5</div>
+      <div class="key">6</div>
+      <div class="key">7</div>
+      <div class="key">8</div>
+      <div class="key">9</div>
+      <div class="key">0</div>
+      <div class="key">-</div>
+      <div class="key">=</div>
+      <div class="key">Backspace</div>
+      <br>
+      <div class="key">Tab</div>
+      <div class="key">Q</div>
+      <div class="key">W</div>
+      <div class="key">E</div>
+      <div class="key">R</div>
+      <div class="key">T</div>
+      <div class="key">Y</div>
+      <div class="key">U</div>
+      <div class="key">I</div>
+      <div class="key">O</div>
+      <div class="key">P</div>
+      <div class="key">[</div>
+      <div class="key">]</div>
+      <div class="key">\</div>
+        <!-- ... -->
+      <div class="key">Ctrl</div>
+      <div class="key">Alt</div>
+      <div class="key">Space</div>
+        <!-- ... -->
+    </div>
+    <div class="mouse">
+        <div class="mouse-button">Left Button</div>
+        <div class="mouse-button">Right Button</div>
+        <div class="mouse-button">Scroll Wheel</div>
+    </div>
+
+    <script>
+        function setup() {
+            createCanvas(800, 600);
+            drawKeyboard();
+            drawMouse();
+        }
+
+        function drawKeyboard() {
+            fill(200);
+            rect(50, 50, 700, 200);
+            fill(0);
+            textSize(16);
+            textAlign(CENTER, CENTER);
+            text('Keyboard', 400, 150);
+        }
+
+        function drawMouse() {
+            fill(200);
+            rect(350, 300, 100, 200);
+            fill(0);
+            textSize(16);
+            textAlign(CENTER, CENTER);
+            text('Mouse', 400, 400);
+        }
+    </script>
+</body>
+</html>
+
