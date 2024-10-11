@@ -2,6 +2,7 @@
   <head>
     <style>
       h1{
+        align=center
         border-style: outset;
         border-width: 10px;
         background-color: #c4c4ff;
@@ -9,13 +10,24 @@
         font-size: 35px;
         display: inline-block;
       }
-      .center{
-        text-align: center;
+      p0{
+        @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+        }
+
+        .flash-text {
+        animation: flash 1s infinite;
+        }
       }
     </style>
   </head>
   <body>
     
     <h1 class="center">t1a05-css-Brandon</h1>
+
+    <p0>
+      Flashing text
+    </p0>
   </body>
 </html>
