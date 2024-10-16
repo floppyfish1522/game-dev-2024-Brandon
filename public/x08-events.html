@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keyboard and Mouse Diagram</title>
     <style>
         .keyboard {
             display: grid;
@@ -19,64 +18,41 @@
             align-items: center;
             justify-content: center;
             background-color: #f0f0f0;
+            transition: background-color 0.3s;
         }
-        .mouse {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .mouse-button {
-            width: 60px;
-            height: 30px;
-            border: 1px solid black;
-            margin: 5px;
-            background-color: #f0f0f0;
+        .key.active {
+            background-color: #00ff00; /* Light up color */
         }
     </style>
 </head>
-<body onload="alert('Page loaded!')" onresize="alert('Window resized!')">
-
+<body>
     <div class="keyboard">
-        <div class="key">Esc</div>
+        <div class="key" data-key="Escape">Esc</div>
+        <div class="key" data-key="F1">F1</div>
         <!-- Add more keys as needed -->
-        <div class="key">F1</div>
-        <div class="key">F2</div>
+        <div class="key" data-key="F2">F2</div>
         <!-- ... -->
-        <div class="key">Ctrl</div>
-        <div class="key">Alt</div>
-        <div class="key">Space</div>
+        <div class="key" data-key="Backspace">Backspace</div>
+        <div class="key" data-key="Tab">Tab</div>
+        <div class="key" data-key="KeyQ">Q</div>
+        <div class="key" data-key="KeyW">W</div>
         <!-- ... -->
-    </div>
-    <div class="mouse">
-        <div class="mouse-button">Left Button</div>
-        <div class="mouse-button">Right Button</div>
-        <div class="mouse-button">Scroll Wheel</div>
     </div>
 
     <script>
-        function setup() {
-            createCanvas(800, 600);
-            drawKeyboard();
-            drawMouse();
-        }
+        const keys = document.querySelectorAll('.key');
 
-        function drawKeyboard() {
-            fill(200);
-            rect(50, 50, 700, 200);
-            fill(0);
-            textSize(16);
-            textAlign(CENTER, CENTER);
-            text('Keyboard', 400, 150);
-        }
+        window.addEventListener('keydown', (e) => {
+            const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
+            if (keyElement) {
+                keyElement.classList.add('active');
+            }
+        });
 
-        function drawMouse() {
-            fill(200);
-            rect(350, 300, 100, 200);
-            fill(0);
-            textSize(16);
-            textAlign(CENTER, CENTER);
-            text('Mouse', 400, 400);
-        }
+        window.addEventListener('keyup', (e) => {
+            const keyElement = document.querySelector(`.key[data-key="${e.code}"]`);
+            if (keyElement) {
+                keyElement.classList.remove('active');
+            }
+        });
     </script>
-</body>
-</html>
