@@ -1,6 +1,18 @@
 <h1 align=center>t1a17-move-Brandon</h1>
 
-<div class="movable" id="myImage01">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .movable {
+             <img id="myImage01" style="position:absolute; width:100px; height:80px; top:0px;
+  left:0px;" src="https://images.stockx.com/360/Crocs-Classic-Clog-Lightning-McQueen/Images/Crocs-Classic-Clog-Lightning-McQueen/Lv2/img01.jpg?auto=compress&dpr=5&updated_at=1620405722&fit=clip&fm=jpg&ixlib=react-9.1.5&q=90&w=400">
+
+        }
+    </style>
+</head>
+
+<div class="movable" id="movable">
 
 <script>
   
@@ -8,7 +20,7 @@
   let myClock02
 
   
-        const movableElement = document.getElementById('myImage01');
+        const movableElement = document.getElementById('movable');
         let position = { x: 100, y: 100 };
 
         document.addEventListener('keydown', (event) => {
@@ -45,7 +57,3 @@
   }, 30)    // activate click every 30 ms (milliseconds)
 
   }"><br><br>
-
-
-  <img id="myImage01" style="position:relative; width:100px; height:80px; top:0px;
-  left:0px;" src="https://images.stockx.com/360/Crocs-Classic-Clog-Lightning-McQueen/Images/Crocs-Classic-Clog-Lightning-McQueen/Lv2/img01.jpg?auto=compress&dpr=5&updated_at=1620405722&fit=clip&fm=jpg&ixlib=react-9.1.5&q=90&w=400">
