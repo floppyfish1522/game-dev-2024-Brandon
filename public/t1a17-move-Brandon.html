@@ -4,34 +4,46 @@
     // Global variables
     let myClock02;
     let position = { x: 0, y: 0 };
-    
+    let isBoosted = false;
+
+    // Function to move the image
     function moveImage(direction) {
         const img = document.getElementById('myImage01');
+        const speed = isBoosted ? 20 : 10;
         switch(direction) {
             case 'w':
-                position.y -= 10;
+                position.y -= speed;
                 img.style.top = position.y + 'px';
                 break;
             case 's':
-                position.y += 10;
+                position.y += speed;
                 img.style.top = position.y + 'px';
                 break;
             case 'a':
-                position.x -= 10;
+                position.x -= speed;
                 img.style.left = position.x + 'px';
                 break;
             case 'd':
-                position.x += 10;
+                position.x += speed;
                 img.style.left = position.x + 'px';
                 break;
         }
     }
 
+    // Event listener for WASD keys
     document.addEventListener('keydown', (event) => {
         if (['w', 's', 'a', 'd'].includes(event.key.toLowerCase())) {
             moveImage(event.key.toLowerCase());
         }
     });
+
+    // Function to boost speed
+    function boostSpeed() {
+        isBoosted = true;
+        setTimeout(() => {
+            isBoosted = false;
+        }, 10000); // Boost for 10 seconds
+    }
 </script>
 
 <input type=button id="myButton02" value="Move Right" onclick="moveImage('d')"><br><br>
@@ -40,4 +52,6 @@
     position.x = 0;
     myClock02 = setInterval(() => document.getElementById('myButton02').click(), 30);
 }"><br><br>
+<input type=button value="Boost" onclick="boostSpeed()"><br><br>
 <img id="myImage01" style="position:relative; width:100px; height:80px; top:0px; left:0px;" src="https://images.stockx.com/360/Crocs-Classic-Clog-Lightning-McQueen/Images/Crocs-Classic-Clog-Lightning-McQueen/Lv2/img01.jpg?auto=compress&dpr=5&updated_at=1620405722&fit=clip&fm=jpg&ixlib=react-9.1.5&q=90&w=400">
+
