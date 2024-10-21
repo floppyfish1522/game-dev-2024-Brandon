@@ -1,1 +1,40 @@
 <h1 align=center>t1a18-extend-class-Brandon</h1>
+
+<script>
+  class myAnimal {
+    constructor(passName, passAge) {
+      this.myName = passName;
+      this.myAge = passAge;
+    }
+    myShow(){
+      document.getElementById('myDiv01').innerHTML = 'Hello '+ this.myName+'<br>'
+    }
+  }
+
+  class myCat extends myAnimal {
+
+    myShow(){
+      document.getElementById('myDiv01').innerHTML = this.myName + ' is a great cat<br>'
+    }
+  }
+  
+</script>
+
+<input type=button value="Examples Class Set and Show Class Animal" onClick="{
+  myDog = new myAnimal('Snickers', 5)
+  myDog.myShow()
+
+  }"><br><br>
+
+  <input type=text id="myText01" value="may be useful later"><br>
+
+  <input type=button vale="Example Extend Class Animal as Cat" onClick="{
+
+
+
+    myPet = new myCat('Fluffy', 14)
+    myPet.myShow()
+
+  }"><br><br>
+
+  <div id="myDiv01">...</div>
