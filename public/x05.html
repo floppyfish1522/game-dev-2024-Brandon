@@ -25,6 +25,7 @@
         const GRAVITY = 0.5;
         const JUMP_STRENGTH = 10;
         const HOOK_DISTANCE = 200;
+        const PLATFORM_HEIGHT = 20;
 
         // Player Object
         const player = {
@@ -33,7 +34,8 @@
             width: 50,
             height: 50,
             velocityY: 0,
-            onGround: false
+            onGround: false,
+            speed: 5
         };
 
         // Grappling Hook Object
@@ -41,6 +43,13 @@
             active: false,
             position: { x: 0, y: 0 }
         };
+
+        // Platforms
+        const platforms = [
+            { x: 50, y: canvas.height - 150, width: 200, height: PLATFORM_HEIGHT },
+            { x: 300, y: canvas.height - 250, width: 200, height: PLATFORM_HEIGHT },
+            { x: 600, y: canvas.height - 350, width: 200, height: PLATFORM_HEIGHT }
+        ];
 
         function update() {
             // Apply gravity
@@ -54,7 +63,21 @@
                 player.y = canvas.height - player.height;
                 player.onGround = true;
                 player.velocityY = 0;
+            } else {
+                player.onGround = false;
             }
+
+            // Check collision with platforms
+            platforms.forEach(platform => {
+                if (player.x < platform.x + platform.width &&
+                    player.x + player.width > platform.x &&
+                    player.y + player.height <= platform.y &&
+                    player.y + player.height + player.velocityY >= platform.y) {
+                    player.y = platform.y - player.height;
+                    player.onGround = true;
+                    player.velocityY = 0;
+                }
+            });
 
             // Update grappling hook
             if (grapplingHook.active) {
@@ -80,6 +103,12 @@
             ctx.fillStyle = 'blue';
             ctx.fillRect(player.x, player.y, player.width, player.height);
 
+            // Draw platforms
+            ctx.fillStyle = 'green';
+            platforms.forEach(platform => {
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            });
+
             // Draw grappling hook
             if (grapplingHook.active) {
                 ctx.strokeStyle = 'green';
@@ -102,12 +131,47 @@
                 player.velocityY = -JUMP_STRENGTH;
                 player.onGround = false;
             }
+            if (event.code === 'KeyA') {
+                player.x -= player.speed; // Move left
+            }
+            if (event.code === 'KeyD') {
+                player.x += player.speed; // Move right
+            }
             if (event.code === 'KeyG') {
                 grapplingHook.active = true;
-                grapplingHook.position = {
-                    x: player.x + HOOK_DISTANCE,
-                    y: player.y + player.height / 2
-                };
+                const mousePosition = getMousePosition();
+                grapplingHook.position.x = mousePosition.x;
+                grapplingHook.position.y = mousePosition.y;
+            }
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            if (grapplingHook.active) {
+                const mousePosition = getMousePosition();
+                grapplingHook.position.x = mousePosition
+
+                            grapplingHook.position.x = mousePosition.x;
+                grapplingHook.position.y = mousePosition.y;
+            }
+        });
+
+        // Function to get mouse position relative to the canvas
+        function getMousePosition() {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        // Event listener for the 'S' key (optional, can be used for additional actions)
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'KeyS') {
+                // Optional action for 'S' key
+                // For example, you could add a feature to deactivate the grappling hook
+                if (grapplingHook.active) {
+                    grapplingHook.active = false;
+                }
             }
         });
 
