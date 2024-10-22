@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            background: #ffffff;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Constants
+        const GRAVITY = 0.5;
+        const JUMP_STRENGTH = 10;
+        const HOOK_DISTANCE = 200;
+
+        // Player Object
+        const player = {
+            x: 100,
+            y: canvas.height - 100,
+            width: 50,
+            height: 50,
+            velocityY: 0,
+            onGround: false
+        };
+
+        // Grappling Hook Object
+        const grapplingHook = {
+            active: false,
+            position: { x: 0, y: 0 }
+        };
+
+        function update() {
+            // Apply gravity
+            if (!player.onGround) {
+                player.velocityY += GRAVITY;
+                player.y += player.velocityY;
+            }
+
+            // Ground collision
+            if (player.y >= canvas.height - player.height) {
+                player.y = canvas.height - player.height;
+                player.onGround = true;
+                player.velocityY = 0;
+            }
+
+            // Update grappling hook
+            if (grapplingHook.active) {
+                const dx = grapplingHook.position.x - (player.x + player.width / 2);
+                const dy = grapplingHook.position.y - (player.y + player.height / 2);
+                const distance = Math.hypot(dx, dy);
+
+                if (distance > 0) {
+                    player.x += dx / distance * 5;
+                    player.y += dy / distance * 5;
+                }
+
+                if (distance < 10) {
+                    grapplingHook.active = false;
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw player
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            // Draw grappling hook
+            if (grapplingHook.active) {
+                ctx.strokeStyle = 'green';
+                ctx.beginPath();
+                ctx.moveTo(player.x + player.width / 2, player.y + player.height / 2);
+                ctx.lineTo(grapplingHook.position.x, grapplingHook.position.y);
+                ctx.stroke();
+            }
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Event listeners for controls
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && player.onGround) {
+                player.velocityY = -JUMP_STRENGTH;
+                player.onGround = false;
+            }
+            if (event.code === 'KeyG') {
+                grapplingHook.active = true;
+                grapplingHook.position = {
+                    x: player.x + HOOK_DISTANCE,
+                    y: player.y + player.height / 2
+                };
+            }
+        });
+
+        // Start the game loop
+        gameLoop();
+    </script>
+</body>
+</html>
