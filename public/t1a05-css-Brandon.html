@@ -19,15 +19,11 @@
         animation: flash 1s infinite;
         }
       }
-     @keyframes spin {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+    .three-d-text {
+    color: white;
+    text-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black, 4px 4px 0px black;
 }
 
-.spin-text {
-    display: inline-block;
-    animation: spin 2s linear infinite;
-}
 
 
         @keyframes slide {
@@ -66,7 +62,7 @@
     white-space: nowrap;
     border-right: 2px solid;
     width: 100%;
-    animation: typing 10s steps(100) infinite;
+    animation: typing 10s steps(30) infinite;
 }
         @keyframes fade {
     from {opacity: 0;}
@@ -92,7 +88,7 @@
     <h1 class="center">t1a05-css-Brandon</h1>
     <br>
     <p class="flash-text">This text flashes!</p><br>
-    <p class="spin-text">This text spins!</p><br>
+    <p class="three-d-text">This text looks 3D!</p><br>
     <p class="slide-text">This text slides across the screen!</p><br>
     <p class="bounce-text">This text bounces!</p><br>
     <p class="wave-text">This text is wavy!</p><br>
