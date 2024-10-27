@@ -58,8 +58,8 @@
 }
 
 @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
+    from {width: 0;}
+    to {width: 100%;}
 }
 
 .typing-text {
@@ -67,12 +67,8 @@
     white-space: nowrap;
     border-right: 2px solid;
     width: 100%;
-    animation: typing 3s steps(30) 1 forwards, blink-caret .75s step-end infinite;
+    animation: typing 10s steps(250) infinite;
 }
-
-@keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: black; }
 
 .fade-text {
     animation: fade 2s ease-in-out infinite alternate;
