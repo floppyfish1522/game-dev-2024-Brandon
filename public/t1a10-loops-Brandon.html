@@ -1,30 +1,30 @@
-<h2 align=center>t1a10-loops-Brandon</h2>
-
-<a href="">Good reference to Javascript Loops</a><br>
-
-
-<h4> Example input output code</h4>
-<pre>
-  
-</pre>
-<h4>Example working code</h4>
-
-Max loops: <input id="myNum01" type=number value="4" ><br>
-
-<input type=button value="Basic for loop with decisions" onclick="{
-  document.getElementById('myDiv01').innerHTML = ''
-  let myTemp = ''
-
-  let myMax = parseInt(document.getElementById('myNum01').value)
-
-  for (let myLoop = 0; myLoop , myMax; myLoop++ ){
-    if (myLoop = 0; myMax){
-      myTemp += ' cool '
-    }
-    myTemp+= 'Loop number: ' + myLoop + '<br>'
-  }
-  document.getElementById('myDiv01').innerHTML = myTemp
-}">
-
-
-<div id="myDiv01">...</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t1a10-loops-Brandon</title>
+</head>
+<body>
+    <h2 align="center">t1a10-loops-Brandon</h2>
+    <a href="">Good reference to Javascript Loops</a>
+    <br>
+    <h4>Example input output code</h4>
+    <pre></pre>
+    <h4>Example working code</h4>
+    Max loops: <input id="myNum01" type="number" value="4"><br>
+    <input type="button" value="Basic for loop with decisions" onclick="{
+        document.getElementById('myDiv01').innerHTML = '';
+        let myTemp = '';
+        let myMax = parseInt(document.getElementById('myNum01').value);
+        for (let myLoop = 0; myLoop < myMax; myLoop++) {
+            if (myLoop == 0) {
+                myTemp += ' cool ';
+            }
+            myTemp += 'Loop number: ' + myLoop + '<br>';
+        }
+        document.getElementById('myDiv01').innerHTML = myTemp;
+    }">
+    <div id="myDiv01">...</div>
+</body>
+</html>
