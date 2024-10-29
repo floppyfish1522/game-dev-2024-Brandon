@@ -1,18 +1,33 @@
 <h1 align=center>t1a08-variables-Brandon</h1> 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Variable Example</h1>
-    <p id="output"></p>
 
-    <script>
-        var myMessage = "This is a variable message!";
+W3Schools link to variables <a href="https://www.w3schools.com/js/js_variables.asp"> here</a><br>
 
-        document.getElementById('output').innerText = myMessage;
-    </script>
-</body>
-</html>
+Input 1:<input type=text id="myIn01" value="5"><br>
+Input 2:<input type=text id="myIn02" value="7"><br>
+<input type=button value="add and fix" oclick="{
+    myTotal = document.getElementById('myIn01').value + document.getElementById('myIn02').value
+    document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal
+}">
 
+<div id="myDiv01">...</div>
 
+Copy and fix.    parseInt() or parseFloat() try not to use var use let instead or const<br>
+
+<input type=button value="Add2 and fix" onclick="{
+    let myX = document.getElementById('myIn01').value
+    let myY = document.getElementById('myIn02').value
+    let myTotal = myX + myY
+    document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal
+}"><br><br>
+
+Other programming languages us defined variables
+<pre>
+    boolean
+    int8 or byte
+    int
+    double
+    float
+    char
+    string
+    
+</pre>
