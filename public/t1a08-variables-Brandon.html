@@ -2,17 +2,37 @@
 W3Schools link to variables <a href="https://www.w3schools.com/js/js_variables.asp">here</a><br>
 Input 1:<input type="text" id="myIn01" value="5"><br>
 Input 2:<input type="text" id="myIn02" value="7"><br>
-<input type="button" value="add and fix" onclick="{ 
-    let myX = parseFloat(document.getElementById('myIn01').value); 
-    let myY = parseFloat(document.getElementById('myIn02').value); 
-    let myTotal = myX + myY; 
-    document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal; 
-}">
+<select id="operation">
+    <option value="add">Add</option>
+    <option value="subtract">Subtract</option>
+    <option value="multiply">Multiply</option>
+    <option value="divide">Divide</option>
+</select><br>
+<input type="button" value="Calculate" onclick="performOperation()">
 <div id="myDiv01">...</div>
 <br><br>
-<input type="button" value="Add2 and fix" onclick="{ 
-    let myX = parseFloat(document.getElementById('myIn01').value); 
-    let myY = parseFloat(document.getElementById('myIn02').value); 
-    let myTotal = myX + myY; 
-    document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal; 
-}"><br><br>
+<script>
+    function performOperation() {
+        let myX = parseFloat(document.getElementById('myIn01').value);
+        let myY = parseFloat(document.getElementById('myIn02').value);
+        let operation = document.getElementById('operation').value;
+        let myTotal;
+
+        switch(operation) {
+            case 'add':
+                myTotal = myX + myY;
+                break;
+            case 'subtract':
+                myTotal = myX - myY;
+                break;
+            case 'multiply':
+                myTotal = myX * myY;
+                break;
+            case 'divide':
+                myTotal = myX / myY;
+                break;
+        }
+
+        document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal;
+    }
+</script>
