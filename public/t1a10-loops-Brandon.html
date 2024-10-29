@@ -9,24 +9,24 @@
     <h4>Example input output code</h4>
     <pre></pre>
     <h4>Example working code</h4>
-    Max loops: <input id="myNum01" type="number" value="4"><br>
-    Number for operations: <input id="myNum02" type="number" value="2"><br>
-    <input type="button" value="Basic for loop with decisions" onclick="{
+    Max loops: <input id="myNum01" type="number" value="20"><br>
+    <input type="button" value="Run FizzBuzz" onclick="{
         document.getElementById('myDiv01').innerHTML = '';
         let myTemp = '';
         let myMax = parseInt(document.getElementById('myNum01').value);
-        let number = parseInt(document.getElementById('myNum02').value);
-        for (let myLoop = 0; myLoop < myMax; myLoop++) {
-            if (myLoop == 0) {
-                myTemp += ' cool ';
+        for (let i = 1; i <= myMax; i++) {
+            if (i % 3 === 0 && i % 5 === 0) {
+                myTemp += 'FizzBuzz<br>';
+            } else if (i % 3 === 0) {
+                myTemp += 'Fizz<br>';
+            } else if (i % 5 === 0) {
+                myTemp += 'Buzz<br>';
+            } else {
+                myTemp += i + '<br>';
             }
-            myTemp += 'Loop number: ' + myLoop + ' - Add: ' + (myLoop + number) + 
-                       ', Subtract: ' + (myLoop - number) + ', Multiply: ' + (myLoop * number) + 
-                       ', Divide: ' + (myLoop / number).toFixed(2) + '<br>';
         }
         document.getElementById('myDiv01').innerHTML = myTemp;
     }">
     <div id="myDiv01">...</div>
 </body>
 </html>
-
