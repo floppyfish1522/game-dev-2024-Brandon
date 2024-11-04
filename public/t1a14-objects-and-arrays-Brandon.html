@@ -1,1 +1,42 @@
+<h1 align=center>t1a14-objects-and-arrays-Brandon</h1>
 
+show your research about objects and arrays in the text area here<br>
+<textarea rows=4 cols=70>
+  let myArray = [5, 2, 8, 2, 1];
+  let myObject = {name: 'John', age: 30, profession: 'developer'};
+
+let myObject = {
+  name: 'Alice',
+  hobbies: ['reading', 'coding', 'hiking'], // Array inside object
+  age: 25
+};
+
+ let myArray = [
+  { name: 'Bob', age: 28 }, // Object inside array
+  { name: 'Charlie', age: 32 }
+];
+</textarea><br><br>
+
+<button onclick="displayArray()">Array with Object in it</button>
+<button onclick="displayObject()">Object with Array in it</button>
+
+<div id="myDiv01"></div>
+
+<script>
+    function displayArray() {
+        let myArray = [
+            { name: 'Bob', age: 28 },
+            { name: 'Charlie', age: 32 }
+        ];
+        document.getElementById('myDiv01').innerHTML = JSON.stringify(myArray, null, 2);
+    }
+
+    function displayObject() {
+        let myObject = {
+            name: 'Alice',
+            hobbies: ['reading', 'coding', 'hiking'],
+            age: 25
+        };
+        document.getElementById('myDiv01').innerHTML = JSON.stringify(myObject, null, 2);
+    }
+</script>
