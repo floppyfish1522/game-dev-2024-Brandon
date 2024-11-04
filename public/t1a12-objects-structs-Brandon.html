@@ -1,30 +1,64 @@
-<h1 align=center›tla12-objects-Brandon</h1>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            color: #bdb76b;
+        }
+        pre {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            margin-bottom: 10px;
+        }
+        #myDiv01 {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1 align="center">t1a12-objects-Brandon</h1>
 
-<a href="">Good reference to Javascript objects</a>‹br>
+    <a href="https://www.w3schools.com/js/js_objects.asp" target="_blank">Good reference to Javascript objects</a><br>
 
-Objects are stored named variables
-
-<h4> Example Objects code</h4>
-<pre>
+    <h4>Example Objects code</h4>
+    <pre>
 let myPerson = {
-  "firstName": "John",
-  "lastName": "Doe",
-  "age": 50,
-  "eyeColor": "blue"
-  }
-</pre› <h4> Example working Objects code</h4>
-Nothing: <input type=text id="mytext01" value="useless at the moment"><br>
-  <input type=button value="Example object set and Show" onclick="{
-    
-    let myPerson = {
-      'firstName' : "John',
-      'lastName' : 'Doe',
-      'age' : 50,
-      'eyeColor' : 'blue' 
-    }
-    document.getElementById('myDivel').innerHTML = '<br>myPerson Object has properties: <br>'
-    document. getElementById('myDive1'). innerHTML += 'firstName: ' + myPerson.firstName + '‹br›'
-    document. getElementById('myDive1').innerHTML += 'You do the others <br> '
-}">
-  
-  <div id="myDiv01">...</div> <br>
+    "firstName": "John",
+    "lastName": "Doe",
+    "age": 50,
+    "eyeColor": "blue"
+};
+    </pre>
+
+    <h4>Example working Objects code</h4>
+    Nothing: <input type="text" id="mytext01" value="useless at the moment"><br>
+    <input type="button" value="Example object set and Show" onclick="{
+        let myPerson = {
+            'firstName': 'John',
+            'lastName': 'Doe',
+            'age': 50,
+            'eyeColor': 'blue'
+        };
+        document.getElementById('myDiv01').innerHTML = '<br>myPerson Object has properties: <br>';
+        document.getElementById('myDiv01').innerHTML += 'firstName: ' + myPerson.firstName + '<br>';
+        document.getElementById('myDiv01').innerHTML += 'lastName: ' + myPerson.lastName + '<br>';
+        document.getElementById('myDiv01').innerHTML += 'age: ' + myPerson.age + '<br>';
+        document.getElementById('myDiv01').innerHTML += 'eyeColor: ' + myPerson.eyeColor + '<br>';
+    }">
+
+    <div id="myDiv01">...</div>
+</body>
+</html>
