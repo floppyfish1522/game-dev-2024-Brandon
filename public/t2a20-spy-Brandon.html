@@ -1,0 +1,45 @@
+<title>t2a20-spy-Brandon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f5;
+            color: #333;
+            padding: 20px;
+        }
+        textarea {
+            margin: 10px 0;
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+    <h1 align="center">t2a19-spy-fred</h1>
+
+    <textarea id="myArea01" rows="4" cols="70">Hello how are you</textarea><br>
+    <input type="button" value="Encrypt" onclick="encrypt()"><br><br>
+    <textarea id="myArea02" rows="4" cols="70"></textarea><br>
+    <input type="button" value="Decrypt" onclick="decrypt()"><br><br>
+    <textarea id="myArea03" rows="4" cols="70"></textarea><br>
+
+    <script>
+        function encrypt() {
+            let myTemp = '';
+            let myString = document.getElementById('myArea01').value.toLowerCase().split('');
+            for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+                myTemp = myString[myLoop];
+                if (myString[myLoop] == 'e') {
+                    myTemp = 'f';
+                } else if (myString[myLoop] == 'h') {
+                    myTemp = 'i';
+                }
+                myString[myLoop] = myTemp;
+            }
+            document.getElementById('myArea02').value = myString.join('');
+        }
+
+        function decrypt() {
+            alert('Sorry, you have to do this!');
+        }
+    </script>
+</body>
