@@ -76,3 +76,11 @@
             // Decrypt each character in the encrypted text
             for (let i = 0; i < encryptedText.length; i++) {
                 decryptedText += decryptionMap[encryptedText[i]];
+            }
+
+            // Display the decrypted text in the third text area
+            document.getElementById('myArea03').value = decryptedText;
+        }
+    </script>
+</body>
+</html>
