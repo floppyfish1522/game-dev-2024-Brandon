@@ -21,51 +21,58 @@
 <body>
     <h1 align="center">t2a20-spy-Brandon</h1>
 
+    <!-- Input text area for the original message -->
     <textarea id="myArea01" rows="4" cols="70">Hello how are you 1234 !@#$</textarea><br>
 
+    <!-- Button to trigger encryption -->
     <input type="button" value="Encrypt" onclick="encryptText()"><br><br>
 
+    <!-- Text area to display the encrypted message -->
     <textarea id="myArea02" rows="4" cols="70"></textarea><br>
 
+    <!-- Button to trigger decryption -->
     <input type="button" value="Decrypt" onclick="decryptText()"><br><br>
 
+    <!-- Text area to display the decrypted message -->
     <textarea id="myArea03" rows="4" cols="70"></textarea><br>
 
     <script>
+        // Define the set of characters to use for encryption and decryption
         const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()-_=+[]{}|;:",.<>?/`~';
-        let encryptionMap = {};
-        let decryptionMap = {};
+        let encryptionMap = {}; // Map to store encryption character mappings
+        let decryptionMap = {}; // Map to store decryption character mappings
 
+        // Function to generate encryption and decryption maps
         function generateMaps() {
+            // Shuffle characters to create a random mapping
             let shuffled = characters.split('').sort(() => 0.5 - Math.random()).join('');
+            // Create encryption and decryption mappings
             for (let i = 0; i < characters.length; i++) {
                 encryptionMap[characters[i]] = shuffled[i];
                 decryptionMap[shuffled[i]] = characters[i];
             }
         }
 
+        // Function to encrypt the input text
         function encryptText() {
-            generateMaps();
+            generateMaps(); // Generate encryption and decryption maps
             let inputText = document.getElementById('myArea01').value;
             let encryptedText = '';
 
+            // Encrypt each character in the input text
             for (let i = 0; i < inputText.length; i++) {
                 encryptedText += encryptionMap[inputText[i]];
             }
 
+            // Display the encrypted text in the second text area
             document.getElementById('myArea02').value = encryptedText;
         }
 
+        // Function to decrypt the encrypted text
         function decryptText() {
             let encryptedText = document.getElementById('myArea02').value;
             let decryptedText = '';
 
+            // Decrypt each character in the encrypted text
             for (let i = 0; i < encryptedText.length; i++) {
                 decryptedText += decryptionMap[encryptedText[i]];
-            }
-
-            document.getElementById('myArea03').value = decryptedText;
-        }
-    </script>
-</body>
-</html>
