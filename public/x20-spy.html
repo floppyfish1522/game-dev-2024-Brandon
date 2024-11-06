@@ -32,12 +32,6 @@
     <textarea id="myArea03" rows="4" cols="70"></textarea><br>
 
     <script>
-        const randomLetters = 'abcdefghijklmnopqrstuvwxyz';
-
-        function getRandomLetter() {
-            return randomLetters[Math.floor(Math.random() * randomLetters.length)];
-        }
-
         function shiftCharCode(charCode, shift) {
             let newCharCode;
             if (charCode >= 97 && charCode <= 122) {
@@ -57,7 +51,9 @@
             for (let i = 0; i < myString.length; i++) {
                 let charCode = myString[i].charCodeAt(0);
                 if (charCode === 32) { // Space
-                    encryptedString += getRandomLetter();
+                    encryptedString += 'p';
+                } else if (charCode === 112) { // Letter 'p'
+                    encryptedString += ' ';
                 } else {
                     encryptedString += String.fromCharCode(shiftCharCode(charCode, 1));
                 }
@@ -72,8 +68,10 @@
 
             for (let i = 0; i < myString.length; i++) {
                 let charCode = myString[i].charCodeAt(0);
-                if (randomLetters.includes(myString[i])) { // Random letter as space
+                if (charCode === 112) { // Letter 'p'
                     decryptedString += ' ';
+                } else if (charCode === 32) { // Space
+                    decryptedString += 'p';
                 } else {
                     decryptedString += String.fromCharCode(shiftCharCode(charCode, -1));
                 }
@@ -84,3 +82,4 @@
     </script>
 </body>
 </html>
+
