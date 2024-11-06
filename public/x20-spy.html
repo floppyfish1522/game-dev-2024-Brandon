@@ -33,79 +33,37 @@
 
     <script>
         function encryptText() {
-            let myTemp = '';
-            let myString = document.getElementById('myArea01').value.toLowerCase().split('');
-            for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-                myTemp = myString[myLoop];
-                switch(myString[myLoop]) {
-                    case 'q': myTemp = 'w'; break;
-                    case 'w': myTemp = 'e'; break;
-                    case 'e': myTemp = 'r'; break;
-                    case 'r': myTemp = 't'; break;
-                    case 't': myTemp = 'y'; break;
-                    case 'y': myTemp = 'u'; break;
-                    case 'u': myTemp = 'i'; break;
-                    case 'i': myTemp = 'o'; break;
-                    case 'o': myTemp = 'p'; break;
-                    case 'p': myTemp = 'a'; break;
-                    case 'a': myTemp = 's'; break;
-                    case 's': myTemp = 'd'; break;
-                    case 'd': myTemp = 'f'; break;
-                    case 'f': myTemp = 'g'; break;
-                    case 'g': myTemp = 'h'; break;
-                    case 'h': myTemp = 'j'; break;
-                    case 'j': myTemp = 'k'; break;
-                    case 'k': myTemp = 'l'; break;
-                    case 'l': myTemp = 'z'; break;
-                    case 'z': myTemp = 'x'; break;
-                    case 'x': myTemp = 'c'; break;
-                    case 'c': myTemp = 'v'; break;
-                    case 'v': myTemp = 'b'; break;
-                    case 'b': myTemp = 'n'; break;
-                    case 'n': myTemp = 'm'; break;
-                    case 'm': myTemp = 'q'; break;
+            let myString = document.getElementById('myArea01').value.toLowerCase();
+            let encryptedString = '';
+
+            for (let i = 0; i < myString.length; i++) {
+                let charCode = myString.charCodeAt(i);
+
+                // Shift letters within the range of 'a' to 'z'
+                if (charCode >= 97 && charCode <= 122) {
+                    charCode = ((charCode - 97 + 1) % 26) + 97;
                 }
-                myString[myLoop] = myTemp;
+                encryptedString += String.fromCharCode(charCode);
             }
-            document.getElementById('myArea02').value = myString.join('');
+
+            document.getElementById('myArea02').value = encryptedString;
         }
 
         function decryptText() {
-            let myTemp = '';
-            let myString = document.getElementById('myArea02').value.toLowerCase().split('');
-            for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-                myTemp = myString[myLoop];
-                switch(myString[myLoop]) {
-                    case 'w': myTemp = 'q'; break;
-                    case 'e': myTemp = 'w'; break;
-                    case 'r': myTemp = 'e'; break;
-                    case 't': myTemp = 'r'; break;
-                    case 'y': myTemp = 't'; break;
-                    case 'u': myTemp = 'y'; break;
-                    case 'i': myTemp = 'u'; break;
-                    case 'o': myTemp = 'i'; break;
-                    case 'p': myTemp = 'o'; break;
-                    case 'a': myTemp = 'p'; break;
-                    case 's': myTemp = 'a'; break;
-                    case 'd': myTemp = 's'; break;
-                    case 'f': myTemp = 'd'; break;
-                    case 'g': myTemp = 'f'; break;
-                    case 'h': myTemp = 'g'; break;
-                    case 'j': myTemp = 'h'; break;
-                    case 'k': myTemp = 'j'; break;
-                    case 'l': myTemp = 'k'; break;
-                    case 'z': myTemp = 'l'; break;
-                    case 'x': myTemp = 'z'; break;
-                    case 'c': myTemp = 'x'; break;
-                    case 'v': myTemp = 'c'; break;
-                    case 'b': myTemp = 'v'; break;
-                    case 'n': myTemp = 'b'; break;
-                    case 'm': myTemp = 'n'; break;
-                    case 'q': myTemp = 'm'; break;
+            let myString = document.getElementById('myArea02').value.toLowerCase();
+            let decryptedString = '';
+
+            for (let i = 0; i < myString.length; i++) {
+                let charCode = myString.charCodeAt(i);
+
+                // Shift letters within the range of 'a' to 'z'
+                if (charCode >= 97 && charCode <= 122) {
+                    charCode = ((charCode - 97 - 1 + 26) % 26) + 97;
                 }
-                myString[myLoop] = myTemp;
+                decryptedString += String.fromCharCode(charCode);
             }
-            document.getElementById('myArea03').value = myString.join('');
+
+            document.getElementById('myArea03').value = decryptedString;
         }
     </script>
 </body>
