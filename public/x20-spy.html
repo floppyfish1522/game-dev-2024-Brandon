@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t2a20-spy-Brandon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e0f7fa;
+            color: #333;
+            padding: 20px;
+        }
+        textarea {
+            margin: 10px 0;
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+    <h1 align="center">t2a20-spy-Brandon</h1>
+
+    <textarea id="myArea01" rows="4" cols="70">Hello how are you</textarea><br>
+
+    <input type="button" value="Encrypt" onclick="encryptText()"><br><br>
+
+    <textarea id="myArea02" rows="4" cols="70"></textarea><br>
+
+    <input type="button" value="Decrypt" onclick="decryptText()"><br><br>
+
+    <textarea id="myArea03" rows="4" cols="70"></textarea><br>
+
+    <script>
+        function encryptText() {
+            let myTemp = '';
+            let myString = document.getElementById('myArea01').value.toLowerCase().split('');
+            for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+                myTemp = myString[myLoop];
+                switch(myString[myLoop]) {
+                    case 'q': myTemp = 'w'; break;
+                    case 'w': myTemp = 'e'; break;
+                    case 'e': myTemp = 'r'; break;
+                    case 'r': myTemp = 't'; break;
+                    case 't': myTemp = 'y'; break;
+                    case 'y': myTemp = 'u'; break;
+                    case 'u': myTemp = 'i'; break;
+                    case 'i': myTemp = 'o'; break;
+                    case 'o': myTemp = 'p'; break;
+                    case 'p': myTemp = 'a'; break;
+                    case 'a': myTemp = 's'; break;
+                    case 's': myTemp = 'd'; break;
+                    case 'd': myTemp = 'f'; break;
+                    case 'f': myTemp = 'g'; break;
+                    case 'g': myTemp = 'h'; break;
+                    case 'h': myTemp = 'j'; break;
+                    case 'j': myTemp = 'k'; break;
+                    case 'k': myTemp = 'l'; break;
+                    case 'l': myTemp = 'z'; break;
+                    case 'z': myTemp = 'x'; break;
+                    case 'x': myTemp = 'c'; break;
+                    case 'c': myTemp = 'v'; break;
+                    case 'v': myTemp = 'b'; break;
+                    case 'b': myTemp = 'n'; break;
+                    case 'n': myTemp = 'm'; break;
+                    case 'm': myTemp = 'q'; break;
+                }
+                myString[myLoop] = myTemp;
+            }
+            document.getElementById('myArea02').value = myString.join('');
+        }
+
+        function decryptText() {
+            let myTemp = '';
+            let myString = document.getElementById('myArea02').value.toLowerCase().split('');
+            for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+                myTemp = myString[myLoop];
+                switch(myString[myLoop]) {
+                    case 'w': myTemp = 'q'; break;
+                    case 'e': myTemp = 'w'; break;
+                    case 'r': myTemp = 'e'; break;
+                    case 't': myTemp = 'r'; break;
+                    case 'y': myTemp = 't'; break;
+                    case 'u': myTemp = 'y'; break;
+                    case 'i': myTemp = 'u'; break;
+                    case 'o': myTemp = 'i'; break;
+                    case 'p': myTemp = 'o'; break;
+                    case 'a': myTemp = 'p'; break;
+                    case 's': myTemp = 'a'; break;
+                    case 'd': myTemp = 's'; break;
+                    case 'f': myTemp = 'd'; break;
+                    case 'g': myTemp = 'f'; break;
+                    case 'h': myTemp = 'g'; break;
+                    case 'j': myTemp = 'h'; break;
+                    case 'k': myTemp = 'j'; break;
+                    case 'l': myTemp = 'k'; break;
+                    case 'z': myTemp = 'l'; break;
+                    case 'x': myTemp = 'z'; break;
+                    case 'c': myTemp = 'x'; break;
+                    case 'v': myTemp = 'c'; break;
+                    case 'b': myTemp = 'v'; break;
+                    case 'n': myTemp = 'b'; break;
+                    case 'm': myTemp = 'n'; break;
+                    case 'q': myTemp = 'm'; break;
+                }
+                myString[myLoop] = myTemp;
+            }
+            document.getElementById('myArea03').value = myString.join('');
+        }
+    </script>
+</body>
+</html>
