@@ -1,4 +1,21 @@
-     <h1 align="center">t1a21-canvas-Brandon</h1>
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t1a21-canvas-Brandon.html</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e0f7fa;
+            color: #333;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 align="center">t1a21-canvas-Brandon</h1>
     You use loops and variables to make fast fancy drawings<br><br>
 
     <input type="button" value=".lineTo(30,200)" onclick="{
@@ -40,7 +57,7 @@
         myGradient.addColorStop(1, 'yellow');
         myContext.fillStyle = myGradient;
         myContext.fillRect(100, 300, 100, 100);
-        myContext.fillStyle = 'black';
+        myContext.fillStyle = 'black'; // reset fillStyle
     }"><br><br>
 
     <input type="button" value="clearRect(20, 20, 50, 50)" onclick="{
@@ -51,10 +68,60 @@
         myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
     }"><br><br>
 
+    <!-- New buttons for additional features -->
+    <input type="button" value=".bezierCurveTo(150,50,220,100,350,100)" onclick="{
+        myContext.beginPath();
+        myContext.moveTo(100,100);
+        myContext.bezierCurveTo(150,50,220,100,350,100);
+        myContext.stroke();
+    }">
+
+    <input type="button" value=".rect(50, 50, 150, 100)" onclick="{
+        myContext.beginPath();
+        myContext.rect(50, 50, 150, 100);
+        myContext.strokeStyle = 'blue';
+        myContext.lineWidth = 5;
+        myContext.stroke();
+    }">
+
+    <input type="button" value=".drawImage()" onclick="{
+        let img = new Image();
+        img.src = 'https://www.example.com/image.jpg';
+        img.onload = function() {
+            myContext.drawImage(img, 50, 50, 200, 150);
+        }
+    }"><br><br>
+
     <canvas id="myCoolTag" width="1000" height="600" style="border:1px solid #000000;"></canvas>
 
     <script>
         // Set up global variables
         let myCanvas = document.getElementById('myCoolTag');
         let myContext = myCanvas.getContext('2d');
+        
+        // Variables for freehand drawing
+        let drawing = false;
+
+        myCanvas.addEventListener('mousedown', (e) => {
+            drawing = true;
+            myContext.beginPath();
+            myContext.moveTo(e.offsetX, e.offsetY);
+        });
+
+        myCanvas.addEventListener('mousemove', (e) => {
+            if (drawing === true) {
+                myContext.lineTo(e.offsetX, e.offsetY);
+                myContext.stroke();
+            }
+        });
+
+        myCanvas.addEventListener('mouseup', () => {
+            drawing = false;
+        });
+
+        myCanvas.addEventListener('mouseout', () => {
+            drawing = false;
+        });
     </script>
+</body>
+</html>
