@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cool Game Template</title>
+<style>
+    body {
+        background-repeat: repeat-x;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        color: #fff;
+        font-size: 3em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    #myImg01, #myImg02 {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+    }
+
+    #collisionMessage {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        font-size: 2em;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    #controls {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+    }
+</style>
+</head>
+<body id="myBody" style="background-image:url('yourBackground.jpg');">
+
+<h1>Cool Game Template</h1>
+<div id="collisionMessage">Collision Detected!</div>
+
+<script>
+    let myGlobalX = 0;
+    let myClock;
+    let moveRightInterval;
+
+    // Detect collision between two elements
+    function myHitOther(my1, my2) {
+        const el1 = document.getElementById(my1).getBoundingClientRect();
+        const el2 = document.getElementById(my2).getBoundingClientRect();
+
+        return !(
+            el1.right < el2.left || 
+            el1.left > el2.right || 
+            el1.bottom < el2.top || 
+            el1.top > el2.bottom
+        );
+    }
+
+    // Check for collisions
+    function myCheckHit() {
+        if (myHitOther('myImg01', 'myImg02')) {
+            showCollisionMessage();
+            document.getElementById('myImg01').style.left = '20px';
+        }
+    }
+
+    // Show collision message
+    function showCollisionMessage() {
+        const message = document.getElementById('collisionMessage');
+        message.style.display = 'block';
+        setTimeout(() => { message.style.display = 'none'; }, 1000);
+    }
+
+    // Move image to the right
+    function startMovingRight() {
+        if (!moveRightInterval) {
+            moveRightInterval = setInterval(() => {
+                const myImg = document.getElementById('myImg01');
+                myImg.style.left = parseInt(myImg.style.left) + 5 + 'px';
+                myCheckHit();
+            }, 50);
+        }
+    }
+
+    function stopMovingRight() {
+        clearInterval(moveRightInterval);
+        moveRightInterval = null;
+    }
+
+    // Background scroll function
+    function startBackgroundScroll() {
+        clearInterval(myClock);
+        myClock = setInterval(() => {
+            myGlobalX -= 5;
+            document.getElementById('myBody').style.backgroundPosition = `${myGlobalX}px 0px`;
+        }, 100);
+    }
+
+    function stopBackgroundScroll() {
+        clearInterval(myClock);
+    }
+</script>
+
+<!-- Player Image (myImg01) -->
+<img id="myImg01" src="player.png" style="top: 200px; left: 50px;">
+
+<!-- Obstacle Image (myImg02) -->
+<img id="myImg02" src="obstacle.png" style="top: 200px; left: 400px;">
+
+<div id="controls">
+    <input type="button" value="Start Background Scroll" onclick="startBackgroundScroll()">
+    <input type="button" value="Stop Background Scroll" onclick="stopBackgroundScroll()">
+    <input type="button" value="Move Right" 
+           onmousedown="startMovingRight()" onmouseup="stopMovingRight()" 
+           ontouchstart="startMovingRight()" ontouchend="stopMovingRight()">
+</div>
+
+</body>
+</html>
 
