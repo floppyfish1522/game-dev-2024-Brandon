@@ -116,19 +116,23 @@
     }
 
     // Set up keydown and keyup events for player movement
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'w') keys.w = true;
-        if (event.key === 'a') keys.a = true;
-        if (event.key === 's') keys.s = true;
-        if (event.key === 'd') keys.d = true;
-    });
+   // Set up keydown and keyup events for player movement
+document.addEventListener('keydown', (event) => {
+    event.preventDefault(); // Prevent default scrolling
+    console.log(`Key down: ${event.key}`); // Debugging line
+    if (event.key === 'w') keys.w = true;
+    if (event.key === 'a') keys.a = true;
+    if (event.key === 's') keys.s = true;
+    if (event.key === 'd') keys.d = true;
+});
 
-    document.addEventListener('keyup', (event) => {
-        if (event.key === 'w') keys.w = false;
-        if (event.key === 'a') keys.a = false;
-        if (event.key === 's') keys.s = false;
-        if (event.key === 'd') keys.d = false;
-    });
+document.addEventListener('keyup', (event) => {
+    console.log(`Key up: ${event.key}`); // Debugging line
+    if (event.key === 'w') keys.w = false;
+    if (event.key === 'a') keys.a = false;
+    if (event.key === 's') keys.s = false;
+    if (event.key === 'd') keys.d = false;
+});
 
     // Game loop
     setInterval(() => {
