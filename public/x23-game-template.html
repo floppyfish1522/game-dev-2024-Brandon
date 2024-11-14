@@ -59,92 +59,45 @@
     myImg02.style.top = '200px';
     myImg02.style.left = '400px';
 
-    // Check collision between two elements
-    function myHitOther() {
-        const el1 = myImg01.getBoundingClientRect();
-        const el2 = myImg02.getBoundingClientRect();
-
-        return !(
-            el1.right < el2.left || 
-            el1.left > el2.right || 
-            el1.bottom < el2.top || 
-            el1.top > el2.bottom
-        );
-    }
-
-    // Show collision message and reset player position
-    function showCollisionMessage() {
-        const message = document.getElementById('collisionMessage');
-        message.style.display = 'block';
-        setTimeout(() => { message.style.display = 'none'; }, 1000);
-        myImg01.style.top = '200px';
-        myImg01.style.left = '50px';
-    }
-
     // Move the player (myImg01) based on keys pressed
     function movePlayer() {
         let top = parseInt(myImg01.style.top);
         let left = parseInt(myImg01.style.left);
 
-        if (keys.w && top > 0) top -= 5;
-        if (keys.s && top < window.innerHeight - 100) top += 5;
-        if (keys.a && left > 0) left -= 5;
-        if (keys.d && left < window.innerWidth - 100) left += 5;
+        if (keys.w && top > 0) top -= 5; // Move up
+        if (keys.s && top < window.innerHeight - 100) top += 5; // Move down
+        if (keys.a && left > 0) left -= 5; // Move left
+        if (keys.d && left < window.innerWidth - 100) left += 5; // Move right
 
         myImg01.style.top = top + 'px';
         myImg01.style.left = left + 'px';
     }
 
-    // Chase the player with myImg02
-    function chasePlayer() {
-        const playerTop = parseInt(myImg01.style.top);
-        const playerLeft = parseInt(myImg01.style.left);
-        let chaserTop = parseInt(myImg02.style.top);
-        let chaserLeft = parseInt(myImg02.style.left);
-
-        if (chaserTop < playerTop) chaserTop += 2;
-        if (chaserTop > playerTop) chaserTop -= 2;
-        if (chaserLeft < playerLeft) chaserLeft += 2;
-        if (chaserLeft > playerLeft) chaserLeft -= 2;
-
-        myImg02.style.top = chaserTop + 'px';
-        myImg02.style.left = chaserLeft + 'px';
-
-        if (myHitOther()) {
-            showCollisionMessage();
-        }
-    }
-
     // Set up keydown and keyup events for player movement
-   // Set up keydown and keyup events for player movement
-document.addEventListener('keydown', (event) => {
-    event.preventDefault(); // Prevent default scrolling
-    console.log(`Key down: ${event.key}`); // Debugging line
-    if (event.key === 'w') keys.w = true;
-    if (event.key === 'a') keys.a = true;
-    if (event.key === 's') keys.s = true;
-    if (event.key === 'd') keys.d = true;
-});
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'w') keys.w = true;
+        if (event.key === 'a') keys.a = true;
+        if (event.key === 's') keys.s = true;
+        if (event.key === 'd') keys.d = true;
+    });
 
-document.addEventListener('keyup', (event) => {
-    console.log(`Key up: ${event.key}`); // Debugging line
-    if (event.key === 'w') keys.w = false;
-    if (event.key === 'a') keys.a = false;
-    if (event.key === 's') keys.s = false;
-    if (event.key === 'd') keys.d = false;
-});
+    document.addEventListener('keyup', (event) => {
+        if (event.key === 'w') keys.w = false;
+        if (event.key === 'a') keys.a = false;
+        if (event.key === 's') keys.s = false;
+        if (event.key === 'd') keys.d = false;
+    });
 
     // Game loop
     setInterval(() => {
         movePlayer();
-        chasePlayer();
     }, 50);
 </script>
 
 <!-- Player Image (myImg01) -->
 <img id="myImg01" src="https://i.ytimg.com/vi/BbI1Jpxy14A/hq720_2.jpg?sqp=-oaymwEdCJYDENAFSFXyq4qpAw8IARUAAIhCcAHAAQbQAQE=&rs=AOn4CLA1N3xQ2ZbYouPuhCjyG68e0x0EXQ" style="position: absolute; top: 200px; left: 50px;">
 
-<!-- Obstacle Image (myImg02) -->
+<!-- Chaser Image (myImg02) -->
 <img id="myImg02" src="https://hpssjellis.github.io/celebclassify/ellistest.jpg" style="position: absolute; top: 200px; left: 400px;">
 
 </body>
