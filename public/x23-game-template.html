@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cool Game Template</title>
+<title>Chase Game</title>
 <style>
     body {
         background-repeat: repeat-x;
@@ -51,18 +51,24 @@
 </head>
 <body id="myBody" style="background-image:url('yourBackground.jpg');">
 
-<h1>Cool Game Template</h1>
-<div id="collisionMessage">Collision Detected!</div>
+<h1>Chase Game</h1>
+<div id="collisionMessage">You Died!</div>
 
 <script>
     let myGlobalX = 0;
     let myClock;
     let moveRightInterval;
+    let moveLeftInterval;
+    let myImg01 = document.getElementById('myImg01');
+    let myImg02 = document.getElementById('myImg02');
 
-    // Detect collision between two elements
+    // Variables for tracking key states for movement
+    let keys = { w: false, a: false, s: false, d: false };
+
+    // Check collision between two elements
     function myHitOther(my1, my2) {
-        const el1 = document.getElementById(my1).getBoundingClientRect();
-        const el2 = document.getElementById(my2).getBoundingClientRect();
+        const el1 = my1.getBoundingClientRect();
+        const el2 = my2.getBoundingClientRect();
 
         return !(
             el1.right < el2.left || 
@@ -72,49 +78,69 @@
         );
     }
 
-    // Check for collisions
-    function myCheckHit() {
-        if (myHitOther('myImg01', 'myImg02')) {
-            showCollisionMessage();
-            document.getElementById('myImg01').style.left = '20px';
-        }
-    }
-
-    // Show collision message
+    // Show collision message and reset player position
     function showCollisionMessage() {
         const message = document.getElementById('collisionMessage');
         message.style.display = 'block';
         setTimeout(() => { message.style.display = 'none'; }, 1000);
+        myImg01.style.top = '200px';
+        myImg01.style.left = '50px';
     }
 
-    // Move image to the right
-    function startMovingRight() {
-        if (!moveRightInterval) {
-            moveRightInterval = setInterval(() => {
-                const myImg = document.getElementById('myImg01');
-                myImg.style.left = parseInt(myImg.style.left) + 5 + 'px';
-                myCheckHit();
-            }, 50);
+    // Move the player (myImg01) based on keys pressed
+    function movePlayer() {
+        let top = parseInt(myImg01.style.top);
+        let left = parseInt(myImg01.style.left);
+
+        if (keys.w && top > 0) top -= 5;
+        if (keys.s && top < window.innerHeight - 100) top += 5;
+        if (keys.a && left > 0) left -= 5;
+        if (keys.d && left < window.innerWidth - 100) left += 5;
+
+        myImg01.style.top = top + 'px';
+        myImg01.style.left = left + 'px';
+    }
+
+    // Chase the player with myImg02
+    function chasePlayer() {
+        const playerTop = parseInt(myImg01.style.top);
+        const playerLeft = parseInt(myImg01.style.left);
+        let chaserTop = parseInt(myImg02.style.top);
+        let chaserLeft = parseInt(myImg02.style.left);
+
+        if (chaserTop < playerTop) chaserTop += 2;
+        if (chaserTop > playerTop) chaserTop -= 2;
+        if (chaserLeft < playerLeft) chaserLeft += 2;
+        if (chaserLeft > playerLeft) chaserLeft -= 2;
+
+        myImg02.style.top = chaserTop + 'px';
+        myImg02.style.left = chaserLeft + 'px';
+
+        if (myHitOther(myImg01, myImg02)) {
+            showCollisionMessage();
         }
     }
 
-    function stopMovingRight() {
-        clearInterval(moveRightInterval);
-        moveRightInterval = null;
-    }
+    // Set up keydown and keyup events for player movement
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'w') keys.w = true;
+        if (event.key === 'a') keys.a = true;
+        if (event.key === 's') keys.s = true;
+        if (event.key === 'd') keys.d = true;
+    });
 
-    // Background scroll function
-    function startBackgroundScroll() {
-        clearInterval(myClock);
-        myClock = setInterval(() => {
-            myGlobalX -= 5;
-            document.getElementById('myBody').style.backgroundPosition = `${myGlobalX}px 0px`;
-        }, 100);
-    }
+    document.addEventListener('keyup', (event) => {
+        if (event.key === 'w') keys.w = false;
+        if (event.key === 'a') keys.a = false;
+        if (event.key === 's') keys.s = false;
+        if (event.key === 'd') keys.d = false;
+    });
 
-    function stopBackgroundScroll() {
-        clearInterval(myClock);
-    }
+    // Game loop
+    setInterval(() => {
+        movePlayer();
+        chasePlayer();
+    }, 50);
 </script>
 
 <!-- Player Image (myImg01) -->
@@ -123,14 +149,5 @@
 <!-- Obstacle Image (myImg02) -->
 <img id="myImg02" src="https://hpssjellis.github.io/celebclassify/ellistest.jpg" style="top: 200px; left: 400px;">
 
-<div id="controls">
-    <input type="button" value="Start Background Scroll" onclick="startBackgroundScroll()">
-    <input type="button" value="Stop Background Scroll" onclick="stopBackgroundScroll()">
-    <input type="button" value="Move Right" 
-           onmousedown="startMovingRight()" onmouseup="stopMovingRight()" 
-           ontouchstart="startMovingRight()" ontouchend="stopMovingRight()">
-</div>
-
 </body>
 </html>
-
