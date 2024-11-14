@@ -41,34 +41,28 @@
         text-align: center;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     }
-
-    #controls {
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-    }
 </style>
 </head>
 <body id="myBody" style="background-image:url('yourBackground.jpg');">
 
 <h1>Chase Game</h1>
-<div id="collisionMessage">You Died!</div>
+<div id="collisionMessage">Collision Detected!</div>
 
 <script>
-    let myGlobalX = 0;
-    let myClock;
-    let moveRightInterval;
-    let moveLeftInterval;
+    let keys = { w: false, a: false, s: false, d: false };
     let myImg01 = document.getElementById('myImg01');
     let myImg02 = document.getElementById('myImg02');
 
-    // Variables for tracking key states for movement
-    let keys = { w: false, a: false, s: false, d: false };
+    // Initial positions for the images
+    myImg01.style.top = '200px';
+    myImg01.style.left = '50px';
+    myImg02.style.top = '200px';
+    myImg02.style.left = '400px';
 
     // Check collision between two elements
-    function myHitOther(my1, my2) {
-        const el1 = my1.getBoundingClientRect();
-        const el2 = my2.getBoundingClientRect();
+    function myHitOther() {
+        const el1 = myImg01.getBoundingClientRect();
+        const el2 = myImg02.getBoundingClientRect();
 
         return !(
             el1.right < el2.left || 
@@ -116,7 +110,7 @@
         myImg02.style.top = chaserTop + 'px';
         myImg02.style.left = chaserLeft + 'px';
 
-        if (myHitOther(myImg01, myImg02)) {
+        if (myHitOther()) {
             showCollisionMessage();
         }
     }
@@ -144,10 +138,11 @@
 </script>
 
 <!-- Player Image (myImg01) -->
-<img id="myImg01" src="https://i.ytimg.com/vi/BbI1Jpxy14A/hq720_2.jpg?sqp=-oaymwEdCJYDENAFSFXyq4qpAw8IARUAAIhCcAHAAQbQAQE=&rs=AOn4CLA1N3xQ2ZbYouPuhCjyG68e0x0EXQ" style="top: 200px; left: 50px;">
+<img id="myImg01" src="https://i.ytimg.com/vi/BbI1Jpxy14A/hq720_2.jpg?sqp=-oaymwEdCJYDENAFSFXyq4qpAw8IARUAAIhCcAHAAQbQAQE=&rs=AOn4CLA1N3xQ2ZbYouPuhCjyG68e0x0EXQ" style="position: absolute; top: 200px; left: 50px;">
 
 <!-- Obstacle Image (myImg02) -->
-<img id="myImg02" src="https://hpssjellis.github.io/celebclassify/ellistest.jpg" style="top: 200px; left: 400px;">
+<img id="myImg02" src="https://hpssjellis.github.io/celebclassify/ellistest.jpg" style="position: absolute; top: 200px; left: 400px;">
 
 </body>
 </html>
+
