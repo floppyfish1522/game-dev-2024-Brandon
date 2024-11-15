@@ -1,20 +1,89 @@
-<h2>t2a22-local-storage-Brandon</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Local Storage</title>
+    <script>
+        // Load the stored data on page load
+        window.onload = function() {
+            displayStoredData();
+        };
 
-<body onload="{
-   myStorage = localStorage.getItem('myStoredText')
-   if(myStorage  != null){
-      document.getElementById('myText1').value = myStorage 
-    }
-}">
-<body onunload="{
-   localstorage.setItem('myStoredText',document.getElementById('myText1').value)
-}">   
-Text example: <input id="myText1" type=text size=70 value="" placeholder="Write here to store"><br>
-<input type="button" value="Store Text" onClick="{
-   localStorage.setItem('myStoredText', document.getElementById('myText1').value)
-   alert(document.getElementById('myText1').value + ' \nHas been stored')
-   document.getElementById('myText1').value = ''
-}">
-<input type="button" value="Retrieve Text" onClick="{
-   document.getElementById('myText1').value = localStorage.getItem('myStoredText')
-}"> 
+        // Store new data with a unique key
+        function storeData() {
+            const key = document.getElementById('keyInput').value.trim();
+            const value = document.getElementById('valueInput').value.trim();
+            
+            if (key && value) {
+                // Store the data as a key-value pair
+                localStorage.setItem(key, value);
+                alert('Data stored with key: ' + key);
+                displayStoredData(); // Update the display after storing
+                document.getElementById('keyInput').value = ''; // Clear inputs
+                document.getElementById('valueInput').value = '';
+            } else {
+                alert('Both key and value are required!');
+            }
+        }
+
+        // Retrieve and display all stored data
+        function displayStoredData() {
+            const listContainer = document.getElementById('storedDataList');
+            listContainer.innerHTML = ''; // Clear the list before displaying
+
+            // Loop through all localStorage items and display them
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                
+                // Create a list item for each stored entry
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<strong>${key}</strong>: ${value} 
+                    <button onclick="removeData('${key}')">Remove</button>`;
+                listContainer.appendChild(listItem);
+            }
+        }
+
+        // Retrieve data by key
+        function retrieveData() {
+            const key = document.getElementById('keyInput').value.trim();
+            if (key) {
+                const value = localStorage.getItem(key);
+                if (value !== null) {
+                    alert(`Value for key "${key}": ${value}`);
+                } else {
+                    alert('No data found for that key.');
+                }
+            } else {
+                alert('Please provide a key to retrieve data.');
+            }
+        }
+
+        // Remove data by key
+        function removeData(key) {
+            if (confirm(`Are you sure you want to remove the data with key "${key}"?`)) {
+                localStorage.removeItem(key);
+                displayStoredData(); // Update the list after removal
+            }
+        }
+    </script>
+</head>
+<body>
+
+<h2>Dynamic Local Storage</h2>
+
+<!-- Inputs for storing data -->
+Key: <input id="keyInput" type="text" size="30" placeholder="Enter key"><br>
+Value: <input id="valueInput" type="text" size="70" placeholder="Enter value"><br>
+
+<!-- Buttons to store, retrieve and display data -->
+<input type="button" value="Store Data" onclick="storeData()">
+<input type="button" value="Retrieve Data" onclick="retrieveData()"><br><br>
+
+<!-- Display all stored data -->
+<h3>Stored Data:</h3>
+<ul id="storedDataList"></ul>
+
+</body>
+</html>
