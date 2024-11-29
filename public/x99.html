@@ -3,10 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Phaser Game</title>
+  <title>Endoparasitic-Inspired Game</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
   <script>
     const config = {
       type: Phaser.AUTO,
@@ -15,8 +21,8 @@
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 300 },
-          debug: false
+          debug: false,
+          gravity: { y: 0 }
         }
       },
       scene: {
@@ -28,27 +34,113 @@
 
     const game = new Phaser.Game(config);
 
-    let player;
+    let player, dragging = false, health = 100, enemies, bullets, traps;
+    const speed = 100;
 
     function preload() {
-      this.load.image('sky', 'assets/sky.png');
-      this.load.image('player', 'assets/player.png');
+      // Load assets
+      this.load.image('background', 'https://i.imgur.com/JldXdR7.png'); // Example background
+      this.load.image('player', 'https://i.imgur.com/lkzX85R.png'); // Example player sprite
+      this.load.image('enemy', 'https://i.imgur.com/XUetjVw.png'); // Example enemy sprite
+      this.load.image('bullet', 'https://i.imgur.com/w2aSY5A.png'); // Example bullet sprite
+      this.load.image('trap', 'https://i.imgur.com/8k6A8Ps.png'); // Example trap sprite
     }
 
     function create() {
-      this.add.image(400, 300, 'sky');
-      player = this.physics.add.sprite(400, 300, 'player');
-      player.setBounce(0.5);
+      // Add background
+      this.add.image(400, 300, 'background');
+
+      // Add player
+      player = this.physics.add.sprite(400, 300, 'player').setScale(0.5);
       player.setCollideWorldBounds(true);
+
+      // Add enemies group
+      enemies = this.physics.add.group();
+      spawnEnemy(this, 200, 200);
+      spawnEnemy(this, 600, 400);
+
+      // Add bullets group
+      bullets = this.physics.add.group();
+
+      // Add traps group
+      traps = this.physics.add.group();
+      traps.create(300, 300, 'trap').setScale(0.3);
+      traps.create(500, 500, 'trap').setScale(0.3);
+
+      // Enable mouse input
+      this.input.on('pointerdown', (pointer) => {
+        dragging = true;
+      });
+
+      this.input.on('pointerup', () => {
+        dragging = false;
+      });
+
+      // Shooting
+      this.input.on('pointerdown', (pointer) => {
+        shootBullet(this, pointer.x, pointer.y);
+      });
+
+      // Collisions
+      this.physics.add.collider(player, enemies, onPlayerHit, null, this);
+      this.physics.add.collider(player, traps, onTrapHit, null, this);
     }
 
     function update() {
-      if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.LEFT)) {
-        player.x -= 5;
-      } else if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.RIGHT)) {
-        player.x += 5;
+      // Dragging movement
+      if (dragging) {
+        player.x += (this.input.activePointer.x - player.x) * 0.1;
+        player.y += (this.input.activePointer.y - player.y) * 0.1;
       }
+
+      // Enemy AI (slowly chase the player)
+      enemies.children.iterate((enemy) => {
+        this.physics.moveToObject(enemy, player, 50);
+      });
+
+      // Game Over condition
+      if (health <= 0) {
+        console.log('Game Over');
+        this.scene.restart();
+        health = 100; // Reset health
+      }
+    }
+
+    function spawnEnemy(scene, x, y) {
+      const enemy = enemies.create(x, y, 'enemy').setScale(0.5);
+      enemy.setCollideWorldBounds(true);
+    }
+
+    function shootBullet(scene, targetX, targetY) {
+      const bullet = bullets.create(player.x, player.y, 'bullet').setScale(0.2);
+      scene.physics.moveTo(bullet, targetX, targetY, 300);
+
+      // Destroy bullet after 2 seconds
+      scene.time.addEvent({
+        delay: 2000,
+        callback: () => bullet.destroy(),
+        loop: false
+      });
+
+      // Bullet collision with enemies
+      scene.physics.add.collider(bullets, enemies, (bullet, enemy) => {
+        bullet.destroy();
+        enemy.destroy();
+        console.log('Enemy killed!');
+      });
+    }
+
+    function onPlayerHit(player, enemy) {
+      enemy.destroy();
+      health -= 20;
+      console.log(`Health: ${health}`);
+    }
+
+    function onTrapHit(player, trap) {
+      health -= 10;
+      console.log(`Health: ${health}`);
     }
   </script>
 </body>
 </html>
+
