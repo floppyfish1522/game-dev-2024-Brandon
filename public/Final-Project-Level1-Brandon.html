@@ -1,1 +1,99 @@
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Ball properties
+let ball = {
+    x: 100,
+    y: canvas.height - 30, // Start near the bottom
+    radius: 20,
+    speedX: 3, // Horizontal speed
+    speedY: 0, // Vertical speed
+    gravity: 0.5, // Gravity pulling the ball down
+    jumpStrength: -10, // Jump velocity
+    onGround: true, // Is the ball on the ground?
+    direction: "right" // Current direction ("right" or "left")
+};
+
+// Load sprite sheets
+const rollRightSprite = new Image();
+rollRightSprite.src = 'roll_right.png'; // Replace with the actual sprite sheet file path
+
+const rollLeftSprite = new Image();
+rollLeftSprite.src = 'roll_left.png'; // Replace with the actual sprite sheet file path
+
+// Sprite properties
+const frameWidth = 40; // Width of a single frame
+const frameHeight = 40; // Height of a single frame
+const totalFrames = 4; // Total number of frames in each sprite sheet
+const frameDelay = 5; // Delay before switching frames
+let currentFrame = 0; // Current animation frame
+let frameCounter = 0; // Counter to handle frame delay
+
+// Draw the animated ball
+function drawBall() {
+    // Determine which sprite sheet to use
+    const sprite = ball.direction === "right" ? rollRightSprite : rollLeftSprite;
+
+    // Draw the current frame of the sprite
+    ctx.drawImage(
+        sprite,
+        currentFrame * frameWidth, 0, // Source X, Y
+        frameWidth, frameHeight,     // Source Width, Height
+        ball.x - ball.radius, ball.y - ball.radius, // Destination X, Y
+        ball.radius * 2, ball.radius * 2 // Destination Width, Height
+    );
+
+    // Update the animation frame
+    frameCounter++;
+    if (frameCounter >= frameDelay) {
+        currentFrame = (currentFrame + 1) % totalFrames; // Loop frames
+        frameCounter = 0;
+    }
+}
+
+// Update ball position
+function updateBall() {
+    // Horizontal movement
+    ball.x += ball.speedX;
+
+    // Check for wall collision and reverse direction
+    if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
+        ball.speedX *= -1; // Reverse direction
+        ball.direction = ball.speedX > 0 ? "right" : "left"; // Update direction
+    }
+
+    // Vertical movement (gravity)
+    ball.y += ball.speedY;
+
+    // Apply gravity
+    if (!ball.onGround) {
+        ball.speedY += ball.gravity;
+    }
+
+    // Check for ground collision
+    if (ball.y + ball.radius >= canvas.height) {
+        ball.y = canvas.height - ball.radius; // Reset position to ground
+        ball.speedY = 0; // Stop vertical movement
+        ball.onGround = true; // Ball is on the ground
+    }
+}
+
+// Handle key press for jump
+window.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && ball.onGround) {
+        ball.speedY = ball.jumpStrength; // Apply jump velocity
+        ball.onGround = false; // Ball is now in the air
+    }
+});
+
+// Game loop
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    drawBall();
+    updateBall();
+    requestAnimationFrame(gameLoop); // Loop the game
+}
+
+// Start the game
+gameLoop();
 
