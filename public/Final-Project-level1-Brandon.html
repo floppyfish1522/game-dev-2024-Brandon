@@ -20,6 +20,19 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Define image paths for animations
+        const images = {
+            left: 'Bulbus_roll_left.png', // Path to rolling left sprite sheet
+            right: 'Bulbus_roll_right.png' // Path to rolling right sprite sheet
+        };
+
+        // Load sprite sheets
+        const rollLeftSprite = new Image();
+        rollLeftSprite.src = images.left;
+
+        const rollRightSprite = new Image();
+        rollRightSprite.src = images.right;
+
         // Ball properties
         let ball = {
             x: 100,
@@ -33,12 +46,7 @@
             direction: "right" // Current direction ("right" or "left")
         };
 
-        // Load sprite sheets
-        const rollRightSprite = new Image();
-        rollRightSprite.src = 'Bulbus_roll_right-20241204-150123.piskel'; 
-        const rollLeftSprite = new Image();
-        rollLeftSprite.src = 'Bulbus_roll_left-20241204-150020.piskel'; 
-    
+        // Sprite properties
         const frameWidth = 40; // Width of a single frame
         const frameHeight = 40; // Height of a single frame
         const totalFrames = 4; // Total number of frames in each sprite sheet
