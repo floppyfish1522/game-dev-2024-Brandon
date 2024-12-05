@@ -1,146 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Endoparasitic-Inspired Game</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Ball Game</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid black;
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
-  <script>
-    const config = {
-      type: Phaser.AUTO,
-      width: 800,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          debug: false,
-          gravity: { y: 0 }
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ball properties
+        let ball = {
+            x: 100,
+            y: canvas.height - 30, // Start near the bottom
+            radius: 20,
+            speedX: 3, // Horizontal speed
+            speedY: 0, // Vertical speed
+            gravity: 0.5, // Gravity pulling the ball down
+            jumpStrength: -10, // Jump velocity
+            onGround: true, // Is the ball on the ground?
+            direction: "right" // Current direction ("right" or "left")
+        };
+
+        // Load sprite sheets
+        const rollRightSprite = new Image();
+        rollRightSprite.src = 'roll_right.png'; // Replace with the actual sprite sheet file path
+
+        const rollLeftSprite = new Image();
+        rollLeftSprite.src = 'roll_left.png'; // Replace with the actual sprite sheet file path
+
+        // Sprite properties
+        const frameWidth = 40; // Width of a single frame
+        const frameHeight = 40; // Height of a single frame
+        const totalFrames = 4; // Total number of frames in each sprite sheet
+        const frameDelay = 5; // Delay before switching frames
+        let currentFrame = 0; // Current animation frame
+        let frameCounter = 0; // Counter to handle frame delay
+
+        // Draw the animated ball
+        function drawBall() {
+            // Determine which sprite sheet to use
+            const sprite = ball.direction === "right" ? rollRightSprite : rollLeftSprite;
+
+            // Draw the current frame of the sprite
+            ctx.drawImage(
+                sprite,
+                currentFrame * frameWidth, 0, // Source X, Y
+                frameWidth, frameHeight,     // Source Width, Height
+                ball.x - ball.radius, ball.y - ball.radius, // Destination X, Y
+                ball.radius * 2, ball.radius * 2 // Destination Width, Height
+            );
+
+            // Update the animation frame
+            frameCounter++;
+            if (frameCounter >= frameDelay) {
+                currentFrame = (currentFrame + 1) % totalFrames; // Loop frames
+                frameCounter = 0;
+            }
         }
-      },
-      scene: {
-        preload: preload,
-        create: create,
-        update: update
-      }
-    };
 
-    const game = new Phaser.Game(config);
+        // Update ball position
+        function updateBall() {
+            // Horizontal movement
+            ball.x += ball.speedX;
 
-    let player, dragging = false, health = 100, enemies, bullets, traps;
-    const speed = 100;
+            // Check for wall collision and reverse direction
+            if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
+                ball.speedX *= -1; // Reverse direction
+                ball.direction = ball.speedX > 0 ? "right" : "left"; // Update direction
+            }
 
-    function preload() {
-      // Load assets
-      this.load.image('background', 'https://i.imgur.com/JldXdR7.png'); // Example background
-      this.load.image('player', 'https://i.imgur.com/lkzX85R.png'); // Example player sprite
-      this.load.image('enemy', 'https://i.imgur.com/XUetjVw.png'); // Example enemy sprite
-      this.load.image('bullet', 'https://i.imgur.com/w2aSY5A.png'); // Example bullet sprite
-      this.load.image('trap', 'https://i.imgur.com/8k6A8Ps.png'); // Example trap sprite
-    }
+            // Vertical movement (gravity)
+            ball.y += ball.speedY;
 
-    function create() {
-      // Add background
-      this.add.image(400, 300, 'background');
+            // Apply gravity
+            if (!ball.onGround) {
+                ball.speedY += ball.gravity;
+            }
 
-      // Add player
-      player = this.physics.add.sprite(400, 300, 'player').setScale(0.5);
-      player.setCollideWorldBounds(true);
+            // Check for ground collision
+            if (ball.y + ball.radius >= canvas.height) {
+                ball.y = canvas.height - ball.radius; // Reset position to ground
+                ball.speedY = 0; // Stop vertical movement
+                ball.onGround = true; // Ball is on the ground
+            }
+        }
 
-      // Add enemies group
-      enemies = this.physics.add.group();
-      spawnEnemy(this, 200, 200);
-      spawnEnemy(this, 600, 400);
+        // Handle key press for jump
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && ball.onGround) {
+                ball.speedY = ball.jumpStrength; // Apply jump velocity
+                ball.onGround = false; // Ball is now in the air
+            }
+        });
 
-      // Add bullets group
-      bullets = this.physics.add.group();
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            drawBall();
+            updateBall();
+            requestAnimationFrame(gameLoop); // Loop the game
+        }
 
-      // Add traps group
-      traps = this.physics.add.group();
-      traps.create(300, 300, 'trap').setScale(0.3);
-      traps.create(500, 500, 'trap').setScale(0.3);
-
-      // Enable mouse input
-      this.input.on('pointerdown', (pointer) => {
-        dragging = true;
-      });
-
-      this.input.on('pointerup', () => {
-        dragging = false;
-      });
-
-      // Shooting
-      this.input.on('pointerdown', (pointer) => {
-        shootBullet(this, pointer.x, pointer.y);
-      });
-
-      // Collisions
-      this.physics.add.collider(player, enemies, onPlayerHit, null, this);
-      this.physics.add.collider(player, traps, onTrapHit, null, this);
-    }
-
-    function update() {
-      // Dragging movement
-      if (dragging) {
-        player.x += (this.input.activePointer.x - player.x) * 0.1;
-        player.y += (this.input.activePointer.y - player.y) * 0.1;
-      }
-
-      // Enemy AI (slowly chase the player)
-      enemies.children.iterate((enemy) => {
-        this.physics.moveToObject(enemy, player, 50);
-      });
-
-      // Game Over condition
-      if (health <= 0) {
-        console.log('Game Over');
-        this.scene.restart();
-        health = 100; // Reset health
-      }
-    }
-
-    function spawnEnemy(scene, x, y) {
-      const enemy = enemies.create(x, y, 'enemy').setScale(0.5);
-      enemy.setCollideWorldBounds(true);
-    }
-
-    function shootBullet(scene, targetX, targetY) {
-      const bullet = bullets.create(player.x, player.y, 'bullet').setScale(0.2);
-      scene.physics.moveTo(bullet, targetX, targetY, 300);
-
-      // Destroy bullet after 2 seconds
-      scene.time.addEvent({
-        delay: 2000,
-        callback: () => bullet.destroy(),
-        loop: false
-      });
-
-      // Bullet collision with enemies
-      scene.physics.add.collider(bullets, enemies, (bullet, enemy) => {
-        bullet.destroy();
-        enemy.destroy();
-        console.log('Enemy killed!');
-      });
-    }
-
-    function onPlayerHit(player, enemy) {
-      enemy.destroy();
-      health -= 20;
-      console.log(`Health: ${health}`);
-    }
-
-    function onTrapHit(player, trap) {
-      health -= 10;
-      console.log(`Health: ${health}`);
-    }
-  </script>
+        // Start the game
+        gameLoop();
+    </script>
 </body>
 </html>
+
 
