@@ -8,16 +8,16 @@
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%; /* Ensure full screen height */
-            overflow: hidden; /* Prevent scrollbars */
+            height: 100%;
+            overflow: hidden;
         }
 
         canvas {
-            display: block; /* Remove default margins */
-            width: 100vw; /* Set canvas width to full screen width */
-            height: 100vh; /* Set canvas height to full screen height */
-            border: 2px solid black; /* Border around the game */
-            background-color: #f0f0f0; /* Set the background color */
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            border: 2px solid black;
+            background-color: #f0f0f0;
         }
     </style>
 </head>
@@ -28,109 +28,114 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Set the canvas size dynamically to match the window size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Load brick texture
+        // Load textures and ball sprites
+        const images = {
+            left: 'Bulbus_roll_left.png', // Path to rolling left sprite sheet
+            right: 'Bulbus_roll_right.png' // Path to rolling right sprite sheet
+        };
         const brickTexture = new Image();
-        brickTexture.src = './brick-wall-lvl1.png'; // Replace with your GitHub-hosted link if applicable
+        brickTexture.src = './brick-wall-lvl1.png'; // Replace with your GitHub-hosted link
+
+        const rollLeftSprite = new Image();
+        rollLeftSprite.src = images.left;
+
+        const rollRightSprite = new Image();
+        rollRightSprite.src = images.right;
 
         // Ball properties
         let ball = {
             x: 100,
-            y: canvas.height - 30, // Start near the bottom
-            radius: 20,
-            speedX: 3, // Horizontal speed
-            speedY: 0, // Vertical speed
-            gravity: 0.5, // Gravity pulling the ball down
-            jumpStrength: -10, // Jump velocity
-            onGround: true, // Is the ball on the ground?
-            direction: "right" // Current direction ("right" or "left")
+            y: canvas.height - 30,
+            radius: 25,
+            speedX: 3,
+            speedY: 0,
+            gravity: 0.5,
+            jumpStrength: -10,
+            onGround: true,
+            direction: "right"
         };
 
-        // Platform and wall properties
+        // Sprite animation properties
+        const frameWidth = 50;
+        const frameHeight = 50;
+        const totalFrames = 8;
+        const frameDelay = 5;
+        let currentFrame = 0;
+        let frameCounter = 0;
+
+        // Platforms and walls
         const platforms = [
-            { x: 100, y: 300, width: 200, height: 20 }, // Example platform
-            { x: 400, y: 200, width: 150, height: 20 },
+            { x: 100, y: 300, width: 250, height: 50 },
+            { x: 400, y: 200, width: 300, height: 50 }
         ];
 
         const walls = [
-            { x: 600, y: canvas.height - 200, width: 20, height: 200 }, // Example wall
+            { x: 600, y: canvas.height - 300, width: 50, height: 300 }
         ];
-
-        // Sprite properties
-        const frameWidth = 50; // Width of a single frame
-        const frameHeight = 50; // Height of a single frame
-        const totalFrames = 8; // Total number of frames in each sprite sheet
-        const frameDelay = 5; // Delay before switching frames
-        let currentFrame = 0; // Current animation frame
-        let frameCounter = 0; // Counter to handle frame delay
 
         // Draw the animated ball
         function drawBall() {
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false);
-            ctx.fillStyle = "blue";
-            ctx.fill();
-            ctx.closePath();
+            const sprite = ball.direction === "right" ? rollRightSprite : rollLeftSprite;
+
+            // Draw the current frame of the sprite
+            ctx.drawImage(
+                sprite,
+                currentFrame * frameWidth, 0,
+                frameWidth, frameHeight,
+                ball.x - ball.radius, ball.y - ball.radius,
+                ball.radius * 2, ball.radius * 2
+            );
+
+            // Update animation frame
+            frameCounter++;
+            if (frameCounter >= frameDelay) {
+                currentFrame = (currentFrame + 1) % totalFrames;
+                frameCounter = 0;
+            }
         }
 
-        // Draw walls and platforms with texture
+        // Draw walls and platforms with brick texture
         function drawObstacles() {
             platforms.forEach(platform => {
-                // Tile the brick texture for each platform
-                for (let x = 0; x < platform.width; x += brickTexture.width) {
-                    ctx.drawImage(
-                        brickTexture,
-                        platform.x + x,
-                        platform.y,
-                        brickTexture.width,
-                        platform.height
-                    );
+                for (let x = 0; x < platform.width; x += 50) {
+                    ctx.drawImage(brickTexture, platform.x + x, platform.y, 50, 50);
                 }
             });
 
             walls.forEach(wall => {
-                // Tile the brick texture for each wall
-                for (let y = 0; y < wall.height; y += brickTexture.height) {
-                    ctx.drawImage(
-                        brickTexture,
-                        wall.x,
-                        wall.y + y,
-                        wall.width,
-                        brickTexture.height
-                    );
+                for (let y = 0; y < wall.height; y += 50) {
+                    ctx.drawImage(brickTexture, wall.x, wall.y + y, 50, 50);
                 }
             });
         }
 
         // Update ball position and handle collisions
         function updateBall() {
-            // Horizontal movement
             ball.x += ball.speedX;
 
-            // Check for wall collision and reverse direction
+            // Horizontal wall collision
             walls.forEach(wall => {
                 if (
-                    ball.x + ball.radius > wall.x && ball.x - ball.radius < wall.x + wall.width &&
-                    ball.y + ball.radius > wall.y && ball.y - ball.radius < wall.y + wall.height
+                    ball.x + ball.radius > wall.x &&
+                    ball.x - ball.radius < wall.x + wall.width &&
+                    ball.y + ball.radius > wall.y &&
+                    ball.y - ball.radius < wall.y + wall.height
                 ) {
-                    ball.speedX *= -1; // Reverse direction
-                    ball.direction = ball.speedX > 0 ? "right" : "left"; // Update direction
+                    ball.speedX *= -1;
+                    ball.direction = ball.speedX > 0 ? "right" : "left";
                 }
             });
 
-            // Vertical movement (gravity)
             ball.y += ball.speedY;
-
-            // Apply gravity
             if (!ball.onGround) {
                 ball.speedY += ball.gravity;
             }
 
-            // Check for platform collision
-            ball.onGround = false; // Assume ball is not on ground
+            // Platform collision
+            ball.onGround = false;
             platforms.forEach(platform => {
                 if (
                     ball.y + ball.radius > platform.y &&
@@ -138,47 +143,52 @@
                     ball.x > platform.x &&
                     ball.x < platform.x + platform.width
                 ) {
-                    ball.y = platform.y - ball.radius; // Reset position to sit on platform
-                    ball.speedY = 0; // Stop vertical movement
-                    ball.onGround = true; // Ball is on the ground
+                    ball.y = platform.y - ball.radius;
+                    ball.speedY = 0;
+                    ball.onGround = true;
                 }
             });
 
-            // Check for ground collision
+            // Ground collision
             if (ball.y + ball.radius >= canvas.height) {
-                ball.y = canvas.height - ball.radius; // Reset position to ground
-                ball.speedY = 0; // Stop vertical movement
-                ball.onGround = true; // Ball is on the ground
+                ball.y = canvas.height - ball.radius;
+                ball.speedY = 0;
+                ball.onGround = true;
             }
 
-            // Check for horizontal wall collisions
+            // Left and right screen boundaries
             if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
-                ball.speedX *= -1; // Reverse direction
-                ball.direction = ball.speedX > 0 ? "right" : "left"; // Update direction
+                ball.speedX *= -1;
+                ball.direction = ball.speedX > 0 ? "right" : "left";
             }
         }
 
-        // Handle key press for jump
+        // Handle jump
         window.addEventListener('keydown', (event) => {
             if (event.code === 'Space' && ball.onGround) {
-                ball.speedY = ball.jumpStrength; // Apply jump velocity
-                ball.onGround = false; // Ball is now in the air
+                ball.speedY = ball.jumpStrength;
+                ball.onGround = false;
             }
         });
 
         // Game loop
         function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawObstacles();
             drawBall();
             updateBall();
-            requestAnimationFrame(gameLoop); // Loop the game
+            requestAnimationFrame(gameLoop);
         }
 
-        // Start the game when the texture loads
+        // Start game after resources load
         brickTexture.onload = () => {
-            gameLoop();
+            rollLeftSprite.onload = () => {
+                rollRightSprite.onload = () => {
+                    gameLoop();
+                };
+            };
         };
     </script>
 </body>
 </html>
+
