@@ -66,14 +66,16 @@
         let currentFrame = 0;
         let frameCounter = 0;
 
-        // Platforms and walls
+        // ** EASY EDIT AREA: Define platforms and walls here **
+        
+        // Platforms: {x: horizontal position, y: vertical position, width: platform width in pixels}
         const platforms = [
-            { x: 100, y: 300, width: 250, height: 50 },
-            { x: 400, y: 200, width: 300, height: 50 }
+            { x: 800, y: 0, width: 50}
         ];
 
+        // Walls: {x: horizontal position, y: vertical position, height: wall height in pixels}
         const walls = [
-            { x: 600, y: canvas.height - 300, width: 50, height: 300 }
+            { x: 600, y: canvas.height - 300, height: 300 } // Example wall
         ];
 
         // Draw the animated ball
@@ -99,12 +101,14 @@
 
         // Draw walls and platforms with brick texture
         function drawObstacles() {
+            // Draw platforms
             platforms.forEach(platform => {
                 for (let x = 0; x < platform.width; x += 50) {
                     ctx.drawImage(brickTexture, platform.x + x, platform.y, 50, 50);
                 }
             });
 
+            // Draw walls
             walls.forEach(wall => {
                 for (let y = 0; y < wall.height; y += 50) {
                     ctx.drawImage(brickTexture, wall.x, wall.y + y, 50, 50);
@@ -120,7 +124,7 @@
             walls.forEach(wall => {
                 if (
                     ball.x + ball.radius > wall.x &&
-                    ball.x - ball.radius < wall.x + wall.width &&
+                    ball.x - ball.radius < wall.x + 50 &&
                     ball.y + ball.radius > wall.y &&
                     ball.y - ball.radius < wall.y + wall.height
                 ) {
@@ -139,7 +143,7 @@
             platforms.forEach(platform => {
                 if (
                     ball.y + ball.radius > platform.y &&
-                    ball.y + ball.radius < platform.y + platform.height &&
+                    ball.y + ball.radius < platform.y + 50 &&
                     ball.x > platform.x &&
                     ball.x < platform.x + platform.width
                 ) {
@@ -191,4 +195,3 @@
     </script>
 </body>
 </html>
-
