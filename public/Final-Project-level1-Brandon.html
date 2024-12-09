@@ -64,8 +64,8 @@
 
         // Unified obstacles array
         const obstacles = [
-            { x: 700, y: canvas.height - 50, width: 200, height: 50 }, // Platform
-            { x: 1000, y: canvas.height - 150, width: 1000, height: 150 } // Wall
+            { x: 500, y: canvas.height - 150, width: 200, height: 50 }, // Platform
+            { x: 600, y: canvas.height - 300, width: 100, height: 150 } // Wall
         ];
 
         // Draw the animated ball
@@ -110,10 +110,10 @@
             }
 
             // Reset onGround flag
+            let wasOnGround = ball.onGround;
             ball.onGround = false;
 
             obstacles.forEach(obstacle => {
-                // Check for collision from all sides
                 const isColliding =
                     ball.x + ball.radius > obstacle.x &&
                     ball.x - ball.radius < obstacle.x + obstacle.width &&
@@ -171,6 +171,11 @@
             if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
                 ball.speedX *= -1;
                 ball.direction = ball.speedX > 0 ? "right" : "left";
+            }
+
+            // Ensure the ball can jump if it was on the ground in the previous frame
+            if (wasOnGround) {
+                ball.onGround = true;
             }
         }
 
