@@ -53,7 +53,7 @@
             speedX: 3,
             speedY: 0,
             gravity: 0.5,
-            jumpStrength: -10,
+            jumpStrength: -20,
             onGround: true,
             direction: "right"
         };
@@ -70,13 +70,13 @@
         
         // Platforms: {x: horizontal position, y: vertical position, width: platform width in pixels}
         const platforms = [
-            { x: 800, y: 0, width: 50},
-            { x: 800, y: 800, width: 50}
+            { x: 500, y: canvas.hight, width: 50},
+            { x: 600, y: canvas.hight, width: 500, hight: 100}
         ];
 
         // Walls: {x: horizontal position, y: vertical position, height: wall height in pixels}
         const walls = [
-            { x: 600, y: canvas.height - 300, height: 300 } // Example wall
+           // { x: 600, y: canvas.height - 300, height: 300 } // Example wall
         ];
 
         // Draw the animated ball
