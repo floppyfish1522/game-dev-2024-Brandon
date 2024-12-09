@@ -65,7 +65,7 @@
         const obstacles = [
             { x: 700, y: canvas.height - 50, width: 100, height: 50 }, // Platform
             { x: 1000, y: canvas.height - 150, width: 1000, height: 150 }, // Wall
-            { x: 1500, y: canvas.height - 250, width: 100, height: 50}
+            { x: 1500, y: canvas.height - 250, width: 100, height: 50 }
         ];
 
         // Draw the animated ball
@@ -109,9 +109,7 @@
                 ball.speedY += ball.gravity;
             }
 
-            // Reset onGround flag
-            let wasOnGround = ball.onGround;
-            ball.onGround = false;
+            let isSupported = false;
 
             obstacles.forEach(obstacle => {
                 const isColliding =
@@ -142,7 +140,7 @@
                         // Collision from top
                         ball.y = obstacleTop - ball.radius;
                         ball.speedY = 0;
-                        ball.onGround = true;
+                        isSupported = true;
                     } else if (smallest === fromBottom && ball.speedY < 0) {
                         // Collision from bottom
                         ball.y = obstacleBottom + ball.radius;
@@ -160,6 +158,9 @@
                 }
             });
 
+            // Update ground status
+            ball.onGround = isSupported;
+
             // Ground collision
             if (ball.y + ball.radius >= canvas.height) {
                 ball.y = canvas.height - ball.radius;
@@ -171,11 +172,6 @@
             if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
                 ball.speedX *= -1;
                 ball.direction = ball.speedX > 0 ? "right" : "left";
-            }
-
-            // Ensure the ball can jump if it was on the ground in the previous frame
-            if (wasOnGround) {
-                ball.onGround = true;
             }
         }
 
@@ -207,3 +203,4 @@
     </script>
 </body>
 </html>
+
