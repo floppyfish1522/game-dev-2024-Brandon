@@ -64,8 +64,8 @@
 
         // Unified obstacles array
         const obstacles = [
-            { x: 500, y: canvas.height - 50, width: 200, height: 50 }, // Platform
-            { x: 600, y: canvas.height - 150, width: 100, height: 300 } // Wall
+            { x: 500, y: canvas.height - 150, width: 200, height: 50 }, // Platform
+            { x: 600, y: canvas.height - 300, width: 100, height: 150 } // Wall
         ];
 
         // Draw the animated ball
@@ -131,7 +131,6 @@
                     const obstacleRight = obstacle.x + obstacle.width;
                     const obstacleLeft = obstacle.x;
 
-                    // Determine the collision side
                     const fromTop = ballBottom - obstacleTop;
                     const fromBottom = obstacleBottom - ballTop;
                     const fromLeft = ballRight - obstacleLeft;
@@ -139,23 +138,24 @@
 
                     const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
-                    if (smallest === fromTop) {
-                        // Collision from the top
-                        ball.y = obstacleTop - ball.radius;
+                    if (smallest === fromTop || smallest === fromBottom) {
+                        // Collision from top or bottom
                         ball.speedY = 0;
-                        ball.onGround = true;
-                    } else if (smallest === fromBottom) {
-                        // Collision from the bottom
-                        ball.y = obstacleBottom + ball.radius;
-                        ball.speedY = 0;
-                    } else if (smallest === fromLeft) {
-                        // Collision from the left
-                        ball.x = obstacleLeft - ball.radius;
-                        ball.speedX = 0;
-                    } else if (smallest === fromRight) {
-                        // Collision from the right
-                        ball.x = obstacleRight + ball.radius;
-                        ball.speedX = 0;
+                        if (smallest === fromTop) {
+                            ball.y = obstacleTop - ball.radius;
+                            ball.onGround = true;
+                        } else {
+                            ball.y = obstacleBottom + ball.radius;
+                        }
+                    } else if (smallest === fromLeft || smallest === fromRight) {
+                        // Collision from left or right
+                        ball.speedX *= -1;
+                        ball.direction = ball.speedX > 0 ? "right" : "left";
+                        if (smallest === fromLeft) {
+                            ball.x = obstacleLeft - ball.radius;
+                        } else {
+                            ball.x = obstacleRight + ball.radius;
+                        }
                     }
                 }
             });
