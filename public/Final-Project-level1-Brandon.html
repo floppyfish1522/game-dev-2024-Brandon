@@ -53,7 +53,7 @@
             speedX: 3,
             speedY: 0,
             gravity: 0.5,
-            jumpStrength: -20,
+            jumpStrength: -12,
             onGround: true,
             direction: "right"
         };
@@ -70,8 +70,8 @@
         
         // Platforms: {x: horizontal position, y: vertical position, width: platform width in pixels}
         const platforms = [
-            { x: 500, y: canvas.hight, width: 50},
-            { x: 600, y: canvas.hight, width: 500, hight: 100}
+            { x: 500, y: canvas.hight-50, width: 50},
+            { x: 600, y: canvas.hight-50, width: 500, hight: 100}
         ];
 
         // Walls: {x: horizontal position, y: vertical position, height: wall height in pixels}
