@@ -69,10 +69,11 @@
         // ** EASY EDIT AREA: Define platforms and walls here **
         
         // Platforms: {x: horizontal position, y: vertical position, width: platform width in pixels}
-        const platforms = [
-            { x: 500, y: canvas.hight-50, width: 50},
-            { x: 600, y: canvas.hight-50, width: 500, hight: 100}
+       const platforms = [
+            { x: 500, y: canvas.height - 50, width: 50 }, // Corrected "canvas.hight" to "canvas.height"
+            { x: 600, y: canvas.height - 150, width: 500 } // Corrected "canvas.hight" and removed unused "hight"
         ];
+
 
         // Walls: {x: horizontal position, y: vertical position, height: wall height in pixels}
         const walls = [
