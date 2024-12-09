@@ -50,7 +50,7 @@
             speedY: 0,
             gravity: 0.5,
             jumpStrength: -12,
-            onGround: true,
+            onGround: false,
             direction: "right"
         };
 
@@ -109,12 +109,12 @@
                 ball.speedY += ball.gravity;
             }
 
-            // Ball's collision flag
+            // Reset onGround flag
             ball.onGround = false;
 
             obstacles.forEach(obstacle => {
                 // Check for collision from all sides
-                const isColliding = 
+                const isColliding =
                     ball.x + ball.radius > obstacle.x &&
                     ball.x - ball.radius < obstacle.x + obstacle.width &&
                     ball.y + ball.radius > obstacle.y &&
@@ -138,15 +138,15 @@
 
                     const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
-                    if (smallest === fromTop || smallest === fromBottom) {
-                        // Collision from top or bottom
+                    if (smallest === fromTop && ball.speedY >= 0) {
+                        // Collision from top
+                        ball.y = obstacleTop - ball.radius;
                         ball.speedY = 0;
-                        if (smallest === fromTop) {
-                            ball.y = obstacleTop - ball.radius;
-                            ball.onGround = true;
-                        } else {
-                            ball.y = obstacleBottom + ball.radius;
-                        }
+                        ball.onGround = true;
+                    } else if (smallest === fromBottom && ball.speedY < 0) {
+                        // Collision from bottom
+                        ball.y = obstacleBottom + ball.radius;
+                        ball.speedY = 0;
                     } else if (smallest === fromLeft || smallest === fromRight) {
                         // Collision from left or right
                         ball.speedX *= -1;
