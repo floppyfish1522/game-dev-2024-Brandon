@@ -38,10 +38,10 @@
         superJumpBlockTexture.src = './super-jump-block.png';
 
         const rollLeftSprite = new Image();
-        rollLeftSprite.src = 'Bulbus_roll_left.png';
+        rollLeftSprite.src = 'Character_roll_left.png';
 
         const rollRightSprite = new Image();
-        rollRightSprite.src = 'Bulbus_roll_right.png';
+        rollRightSprite.src = 'Character_roll_right.png';
 
         // Character properties
         let character = {
@@ -190,9 +190,9 @@
             }
         }
 
-        // Handle jump
-        window.addEventListener('keydown', (event) => {
-            if (event.code === 'Space' && character.onGround) {
+        // Handle jump on left click
+        window.addEventListener('mousedown', () => {
+            if (character.onGround) {
                 if (character.onSuperJumpBlock) {
                     character.speedY = character.superJumpStrength;
                 } else {
