@@ -1,225 +1,226 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <style> 
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            overflow: hidden; 
-        } 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
 
-        canvas { 
-            display: block; 
-            width: 100vw; 
-            height: 100vh; 
-            border: 2px solid black; 
-            background-color: #f0f0f0; 
-        } 
-    </style> 
-</head> 
-<body> 
-    <canvas id="gameCanvas"></canvas> 
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            border: 2px solid black;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
 
-    <script> 
-        const canvas = document.getElementById('gameCanvas'); 
-        const ctx = canvas.getContext('2d'); 
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth; 
-        canvas.height = window.innerHeight; 
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        // Load textures and ball sprites 
-        const brickTexture = new Image(); 
-        brickTexture.src = './brick-wall-lvl1.png'; // Replace with your GitHub-hosted link 
+        // Load textures and character sprites
+        const brickTexture = new Image();
+        brickTexture.src = './brick-wall-lvl1.png'; // Replace with your GitHub-hosted link
 
-        const superJumpBlockTexture = new Image(); 
-        superJumpBlockTexture.src = './super-jump-block.png'; 
+        const superJumpBlockTexture = new Image();
+        superJumpBlockTexture.src = './super-jump-block.png';
 
-        const rollLeftSprite = new Image(); 
-        rollLeftSprite.src = 'Bulbus_roll_left.png'; 
+        const rollLeftSprite = new Image();
+        rollLeftSprite.src = 'Bulbus_roll_left.png';
 
-        const rollRightSprite = new Image(); 
-        rollRightSprite.src = 'Bulbus_roll_right.png'; 
+        const rollRightSprite = new Image();
+        rollRightSprite.src = 'Bulbus_roll_right.png';
 
-        // Ball properties 
-        let ball = { 
-            x: 100, 
-            y: canvas.height - 30, 
-            radius: 25, 
-            speedX: 3, 
-            speedY: 0, 
-            gravity: 0.5, 
-            jumpStrength: -12, 
-            superJumpStrength: -16, 
-            onGround: false, 
-            onSuperJumpBlock: false, 
-            direction: "right" 
-        }; 
+        // Character properties
+        let character = {
+            x: 100,
+            y: canvas.height - 50,
+            width: 50,
+            height: 50,
+            speedX: 3,
+            speedY: 0,
+            gravity: 0.5,
+            jumpStrength: -12,
+            superJumpStrength: -16,
+            onGround: false,
+            onSuperJumpBlock: false,
+            direction: "right"
+        };
 
-        // Sprite animation properties 
-        const frameWidth = 50; 
-        const frameHeight = 50; 
-        const totalFrames = 8; 
-        const frameDelay = 5; 
-        let currentFrame = 0; 
-        let frameCounter = 0; 
+        // Sprite animation properties
+        const frameWidth = 50;
+        const frameHeight = 50;
+        const totalFrames = 8;
+        const frameDelay = 5;
+        let currentFrame = 0;
+        let frameCounter = 0;
 
-        // Unified obstacles array 
-        const obstacles = [ 
-            { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' }, // Platform 
-            { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' }, // Wall 
-            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' }, 
-            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' }, 
-            { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' }, 
+        // Unified obstacles array
+        const obstacles = [
+            { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' }, // Platform
+            { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' }, // Wall
+            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
+            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
+            { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
             { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
-            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' } // Super jump block 
-        ]; 
+            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' } // Super jump block
+        ];
 
-        // Draw the animated ball 
-        function drawBall() { 
-            const sprite = ball.direction === "right" ? rollRightSprite : rollLeftSprite; 
+        // Draw the animated character
+        function drawCharacter() {
+            const sprite = character.direction === "right" ? rollRightSprite : rollLeftSprite;
 
-            // Draw the current frame of the sprite 
-            ctx.drawImage( 
-                sprite, 
-                currentFrame * frameWidth, 0, 
-                frameWidth, frameHeight, 
-                ball.x - ball.radius, ball.y - ball.radius, 
-                ball.radius * 2, ball.radius * 2 
-            ); 
+            // Draw the current frame of the sprite
+            ctx.drawImage(
+                sprite,
+                currentFrame * frameWidth, 0,
+                frameWidth, frameHeight,
+                character.x, character.y,
+                character.width, character.height
+            );
 
-            // Update animation frame 
-            frameCounter++; 
-            if (frameCounter >= frameDelay) { 
-                currentFrame = (currentFrame + 1) % totalFrames; 
-                frameCounter = 0; 
-            } 
-        } 
+            // Update animation frame
+            frameCounter++;
+            if (frameCounter >= frameDelay) {
+                currentFrame = (currentFrame + 1) % totalFrames;
+                frameCounter = 0;
+            }
+        }
 
-        // Draw obstacles 
-        function drawObstacles() { 
-            obstacles.forEach(obstacle => { 
-                const texture = obstacle.type === 'superJump' ? superJumpBlockTexture : brickTexture; 
-                for (let x = 0; x < obstacle.width; x += 50) { 
-                    for (let y = 0; y < obstacle.height; y += 50) { 
-                        ctx.drawImage(texture, obstacle.x + x, obstacle.y + y, 50, 50); 
-                    } 
-                } 
-            }); 
-        } 
+        // Draw obstacles
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                const texture = obstacle.type === 'superJump' ? superJumpBlockTexture : brickTexture;
+                for (let x = 0; x < obstacle.width; x += 50) {
+                    for (let y = 0; y < obstacle.height; y += 50) {
+                        ctx.drawImage(texture, obstacle.x + x, obstacle.y + y, 50, 50);
+                    }
+                }
+            });
+        }
 
-        // Update ball position and handle collisions 
-        function updateBall() { 
-            ball.x += ball.speedX; 
-            ball.y += ball.speedY; 
+        // Update character position and handle collisions
+        function updateCharacter() {
+            character.x += character.speedX;
+            character.y += character.speedY;
 
-            if (!ball.onGround) { 
-                ball.speedY += ball.gravity; 
-            } 
+            if (!character.onGround) {
+                character.speedY += character.gravity;
+            }
 
-            let isSupported = false; 
-            ball.onSuperJumpBlock = false; 
+            let isSupported = false;
+            character.onSuperJumpBlock = false;
 
-            obstacles.forEach(obstacle => { 
-                const isColliding = 
-                    ball.x + ball.radius > obstacle.x && 
-                    ball.x - ball.radius < obstacle.x + obstacle.width && 
-                    ball.y + ball.radius > obstacle.y && 
-                    ball.y - ball.radius < obstacle.y + obstacle.height; 
+            obstacles.forEach(obstacle => {
+                const isColliding =
+                    character.x + character.width > obstacle.x &&
+                    character.x < obstacle.x + obstacle.width &&
+                    character.y + character.height > obstacle.y &&
+                    character.y < obstacle.y + obstacle.height;
 
-                if (isColliding) { 
-                    const ballBottom = ball.y + ball.radius; 
-                    const ballTop = ball.y - ball.radius; 
-                    const ballRight = ball.x + ball.radius; 
-                    const ballLeft = ball.x - ball.radius; 
+                if (isColliding) {
+                    const characterBottom = character.y + character.height;
+                    const characterTop = character.y;
+                    const characterRight = character.x + character.width;
+                    const characterLeft = character.x;
 
-                    const obstacleBottom = obstacle.y + obstacle.height; 
-                    const obstacleTop = obstacle.y; 
-                    const obstacleRight = obstacle.x + obstacle.width; 
-                    const obstacleLeft = obstacle.x; 
+                    const obstacleBottom = obstacle.y + obstacle.height;
+                    const obstacleTop = obstacle.y;
+                    const obstacleRight = obstacle.x + obstacle.width;
+                    const obstacleLeft = obstacle.x;
 
-                    const fromTop = ballBottom - obstacleTop; 
-                    const fromBottom = obstacleBottom - ballTop; 
-                    const fromLeft = ballRight - obstacleLeft; 
-                    const fromRight = obstacleRight - ballLeft; 
+                    const fromTop = characterBottom - obstacleTop;
+                    const fromBottom = obstacleBottom - characterTop;
+                    const fromLeft = characterRight - obstacleLeft;
+                    const fromRight = obstacleRight - characterLeft;
 
-                    const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight); 
+                    const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
-                    if (smallest === fromTop && ball.speedY >= 0) { 
-                        // Collision from top 
-                        ball.y = obstacleTop - ball.radius; 
-                        ball.speedY = 0; 
-                        isSupported = true; 
-                        if (obstacle.type === 'superJump') { 
-                            ball.onSuperJumpBlock = true; 
-                        } 
-                    } else if (smallest === fromBottom && ball.speedY < 0) { 
-                        // Collision from bottom 
-                        ball.y = obstacleBottom + ball.radius; 
-                        ball.speedY = 0; 
-                    } else if (smallest === fromLeft || smallest === fromRight) { 
-                        // Collision from left or right 
-                        ball.speedX *= -1; 
-                        ball.direction = ball.speedX > 0 ? "right" : "left"; 
-                        if (smallest === fromLeft) { 
-                            ball.x = obstacleLeft - ball.radius; 
-                        } else { 
-                            ball.x = obstacleRight + ball.radius; 
-                        } 
-                    } 
-                } 
-            }); 
+                    if (smallest === fromTop && character.speedY >= 0) {
+                        // Collision from top
+                        character.y = obstacleTop - character.height;
+                        character.speedY = 0;
+                        isSupported = true;
+                        if (obstacle.type === 'superJump') {
+                            character.onSuperJumpBlock = true;
+                        }
+                    } else if (smallest === fromBottom && character.speedY < 0) {
+                        // Collision from bottom
+                        character.y = obstacleBottom;
+                        character.speedY = 0;
+                    } else if (smallest === fromLeft || smallest === fromRight) {
+                        // Collision from left or right
+                        character.speedX *= -1;
+                        character.direction = character.speedX > 0 ? "right" : "left";
+                        if (smallest === fromLeft) {
+                            character.x = obstacleLeft - character.width;
+                        } else {
+                            character.x = obstacleRight;
+                        }
+                    }
+                }
+            });
 
-            // Update ground status 
-            ball.onGround = isSupported; 
+            // Update ground status
+            character.onGround = isSupported;
 
-            // Ground collision 
-            if (ball.y + ball.radius >= canvas.height) { 
-                ball.y = canvas.height - ball.radius; 
-                ball.speedY = 0; 
-                ball.onGround = true; 
-            } 
+            // Ground collision
+            if (character.y + character.height >= canvas.height) {
+                character.y = canvas.height - character.height;
+                character.speedY = 0;
+                character.onGround = true;
+            }
 
-            // Left and right screen boundaries 
-            if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) { 
-                ball.speedX *= -1; 
-                ball.direction = ball.speedX > 0 ? "right" : "left"; 
-            } 
-        } 
+            // Left and right screen boundaries
+            if (character.x + character.width >= canvas.width || character.x <= 0) {
+                character.speedX *= -1;
+                character.direction = character.speedX > 0 ? "right" : "left";
+            }
+        }
 
-        // Handle jump 
-        window.addEventListener('keydown', (event) => { 
-            if (event.code === 'Space' && ball.onGround) { 
-                if (ball.onSuperJumpBlock) { 
-                    ball.speedY = ball.superJumpStrength; 
-                } else { 
-                    ball.speedY = ball.jumpStrength; 
-                } 
-                ball.onGround = false; 
-            } 
-        }); 
+        // Handle jump
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && character.onGround) {
+                if (character.onSuperJumpBlock) {
+                    character.speedY = character.superJumpStrength;
+                } else {
+                    character.speedY = character.jumpStrength;
+                }
+                character.onGround = false;
+            }
+        });
 
-        // Game loop 
-        function gameLoop() { 
-            ctx.clearRect(0, 0, canvas.width, canvas.height); 
-            drawObstacles(); 
-            drawBall(); 
-            updateBall(); 
-            requestAnimationFrame(gameLoop); 
-        } 
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawObstacles();
+            drawCharacter();
+            updateCharacter();
+            requestAnimationFrame(gameLoop);
+        }
 
-        // Start game after resources load 
-        brickTexture.onload = () => { 
-            superJumpBlockTexture.onload = () => { 
-                rollLeftSprite.onload = () => { 
-                    rollRightSprite.onload = () => { 
-                        gameLoop(); 
-                    }; 
-                }; 
-            }; 
-        }; 
-    </script> 
-</body> 
+        // Start game after resources load
+        brickTexture.onload = () => {
+            superJumpBlockTexture.onload = () => {
+                rollLeftSprite.onload = () => {
+                    rollRightSprite.onload = () => {
+                        gameLoop();
+                    };
+                };
+            };
+        };
+    </script>
+</body>
 </html>
