@@ -190,9 +190,9 @@
             }
         }
 
-        // Handle jump on left click
-        window.addEventListener('mousedown', () => {
-            if (character.onGround) {
+        // Handle jump
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && character.onGround) {
                 if (character.onSuperJumpBlock) {
                     character.speedY = character.superJumpStrength;
                 } else {
