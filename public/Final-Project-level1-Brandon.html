@@ -75,7 +75,7 @@
             { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
             { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
             { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
-            { x: 200, y: canvas.height -  550, width: 950, height: 50, type: 'normal' },
+            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'normal' },
             { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' }
         ];
 
@@ -124,7 +124,11 @@
             let isSupported = false;
             character.onSuperJumpBlock = false;
 
+            obstacles.sort((a, b) => a.y - b.y); // Sort obstacles by vertical position
+
             obstacles.forEach(obstacle => {
+                const nextY = character.y + character.speedY;
+                const isMovingDown = character.speedY > 0;
                 const isColliding =
                     character.x + character.width > obstacle.x &&
                     character.x < obstacle.x + obstacle.width &&
@@ -149,14 +153,12 @@
 
                     const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
-                    if (smallest === fromTop && character.speedY >= 0) {
+                    if (smallest === fromTop && isMovingDown) {
                         // Collision from top
                         character.y = obstacleTop - character.height;
                         character.speedY = 0;
                         isSupported = true;
-                        if (obstacle.type === 'superJump') {
-                            character.onSuperJumpBlock = true;
-                        }
+                        character.onSuperJumpBlock = obstacle.type === 'superJump';
                     } else if (smallest === fromBottom && character.speedY < 0) {
                         // Collision from bottom
                         character.y = obstacleBottom;
