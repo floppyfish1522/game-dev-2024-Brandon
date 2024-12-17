@@ -37,11 +37,8 @@
         const superJumpBlockTexture = new Image();
         superJumpBlockTexture.src = './super-jump-block.png';
 
-        const boostLeftTexture = new Image();
-        boostLeftTexture.src = './boost-left.png';
-
-        const boostRightTexture = new Image();
-        boostRightTexture.src = './boost-right.png';
+        const boostBlockTexture = new Image();
+        boostBlockTexture.src = './boost-right.png';
 
         const rollLeftSprite = new Image();
         rollLeftSprite.src = 'Bulbus_roll_left.png';
@@ -59,7 +56,6 @@
             speedY: 0,
             gravity: 0.5,
             jumpStrength: -12,
-            superJumpStrength: -16,
             boosted: false,
             onGround: false,
             direction: "right"
@@ -72,25 +68,29 @@
         let currentFrame = 0;
         let frameCounter = 0;
 
-        // Obstacle array
+        // Unified obstacles array (original setup + 1 boost block)
         const obstacles = [
             { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' },
-            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'boost-left' },
-            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'boost-right' },
-            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'superJump' },
+            { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' },
+            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
+            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
+            { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
+            { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
+            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'normal' },
+            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' },
+            { x: 500, y: canvas.height - 50, width: 100, height: 50, type: 'boost' } // Boost block
         ];
 
-        function applyBoost(direction) {
+        function applyBoost() {
             if (character.boosted) return; // Avoid multiple boosts
             character.boosted = true;
 
-            // Apply the boost
             const originalSpeed = Math.abs(character.speedX);
-            character.speedX = direction === "left" ? -originalSpeed * 3 : originalSpeed * 3;
+            character.speedX = character.direction === "right" ? originalSpeed * 3 : -originalSpeed * 3;
 
-            // Revert after 1 second
+            // Revert speed after 1 second
             setTimeout(() => {
-                character.speedX = direction === "left" ? -originalSpeed : originalSpeed;
+                character.speedX = character.direction === "right" ? originalSpeed : -originalSpeed;
                 character.boosted = false;
             }, 1000);
         }
@@ -102,11 +102,8 @@
                     case 'superJump':
                         texture = superJumpBlockTexture;
                         break;
-                    case 'boost-left':
-                        texture = boostLeftTexture;
-                        break;
-                    case 'boost-right':
-                        texture = boostRightTexture;
+                    case 'boost':
+                        texture = boostBlockTexture;
                         break;
                     default:
                         texture = brickTexture;
@@ -159,20 +156,19 @@
                         character.y = obstacle.y - character.height;
                         character.speedY = 0;
                         character.onGround = true;
-                        if (obstacle.type === 'superJump') character.speedY = character.superJumpStrength;
+                        if (obstacle.type === 'superJump') character.speedY = -16; // Super jump strength
                     } else if (smallest === fromBottom) {
                         character.y = obstacle.y + obstacle.height;
                         character.speedY = 0;
                     } else if (smallest === fromLeft) {
                         character.x = obstacle.x - character.width;
-                        character.speedX *= -1;
+                        character.speedX = 0; // Stop character from passing through walls
                     } else if (smallest === fromRight) {
                         character.x = obstacle.x + obstacle.width;
-                        character.speedX *= -1;
+                        character.speedX = 0;
                     }
 
-                    if (obstacle.type === 'boost-left') applyBoost("left");
-                    if (obstacle.type === 'boost-right') applyBoost("right");
+                    if (obstacle.type === 'boost') applyBoost();
                 }
             });
 
@@ -180,6 +176,17 @@
                 character.y = canvas.height - character.height;
                 character.speedY = 0;
                 character.onGround = true;
+            }
+
+            // Wall boundaries
+            if (character.x < 0) {
+                character.x = 0;
+                character.speedX = Math.abs(character.speedX); // Bounce right
+                character.direction = "right";
+            } else if (character.x + character.width > canvas.width) {
+                character.x = canvas.width - character.width;
+                character.speedX = -Math.abs(character.speedX); // Bounce left
+                character.direction = "left";
             }
         }
 
@@ -198,15 +205,13 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Start the game
+        // Start game
         brickTexture.onload = () => {
             superJumpBlockTexture.onload = () => {
-                boostLeftTexture.onload = () => {
-                    boostRightTexture.onload = () => {
-                        rollLeftSprite.onload = () => {
-                            rollRightSprite.onload = () => {
-                                gameLoop();
-                            };
+                boostBlockTexture.onload = () => {
+                    rollLeftSprite.onload = () => {
+                        rollRightSprite.onload = () => {
+                            gameLoop();
                         };
                     };
                 };
