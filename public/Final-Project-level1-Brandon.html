@@ -37,12 +37,6 @@
         const superJumpBlockTexture = new Image();
         superJumpBlockTexture.src = './super-jump-block.png';
 
-        const boostLeftTexture = new Image();
-        boostLeftTexture.src = './boost-left.png';
-
-        const boostRightTexture = new Image();
-        boostRightTexture.src = './boost-right.png';
-
         const rollLeftSprite = new Image();
         rollLeftSprite.src = 'Bulbus_roll_left.png';
 
@@ -62,8 +56,7 @@
             superJumpStrength: -16,
             onGround: false,
             onSuperJumpBlock: false,
-            direction: "right",
-            boosted: false
+            direction: "right"
         };
 
         // Sprite animation properties
@@ -78,29 +71,13 @@
         const obstacles = [
             { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' },
             { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' },
-            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'boost-left' },
-            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'boost-right' },
+            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
+            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
             { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
             { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
-            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'superJump' }
+            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'normal' },
+            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' }
         ];
-
-        // Speed boost function
-        function applyBoost(direction) {
-            if (character.boosted) return; // Avoid stacking boosts
-            character.boosted = true;
-            const originalSpeed = character.speedX;
-
-            // Apply speed boost
-            character.speedX = direction === "left" ? -Math.abs(originalSpeed * 3) : Math.abs(originalSpeed * 3);
-            character.direction = direction;
-
-            // Revert back to normal speed after 1 second
-            setTimeout(() => {
-                character.speedX = originalSpeed;
-                character.boosted = false;
-            }, 1000);
-        }
 
         // Draw the animated character
         function drawCharacter() {
@@ -126,22 +103,7 @@
         // Draw obstacles
         function drawObstacles() {
             obstacles.forEach(obstacle => {
-                let texture;
-
-                switch (obstacle.type) {
-                    case 'superJump':
-                        texture = superJumpBlockTexture;
-                        break;
-                    case 'boost-left':
-                        texture = boostLeftTexture;
-                        break;
-                    case 'boost-right':
-                        texture = boostRightTexture;
-                        break;
-                    default:
-                        texture = brickTexture;
-                }
-
+                const texture = obstacle.type === 'superJump' ? superJumpBlockTexture : brickTexture;
                 for (let x = 0; x < obstacle.width; x += 50) {
                     for (let y = 0; y < obstacle.height; y += 50) {
                         ctx.drawImage(texture, obstacle.x + x, obstacle.y + y, 50, 50);
@@ -162,7 +124,11 @@
             let isSupported = false;
             character.onSuperJumpBlock = false;
 
+            obstacles.sort((a, b) => a.y - b.y); // Sort obstacles by vertical position
+
             obstacles.forEach(obstacle => {
+                const nextY = character.y + character.speedY;
+                const isMovingDown = character.speedY > 0;
                 const isColliding =
                     character.x + character.width > obstacle.x &&
                     character.x < obstacle.x + obstacle.width &&
@@ -170,27 +136,50 @@
                     character.y < obstacle.y + obstacle.height;
 
                 if (isColliding) {
-                    if (obstacle.type === 'boost-left') {
-                        applyBoost("left");
-                    } else if (obstacle.type === 'boost-right') {
-                        applyBoost("right");
-                    }
+                    const characterBottom = character.y + character.height;
+                    const characterTop = character.y;
+                    const characterRight = character.x + character.width;
+                    const characterLeft = character.x;
 
-                    if (character.speedY > 0 && obstacle.type !== 'boost-left' && obstacle.type !== 'boost-right') {
-                        // Collision from above
-                        character.y = obstacle.y - character.height;
+                    const obstacleBottom = obstacle.y + obstacle.height;
+                    const obstacleTop = obstacle.y;
+                    const obstacleRight = obstacle.x + obstacle.width;
+                    const obstacleLeft = obstacle.x;
+
+                    const fromTop = characterBottom - obstacleTop;
+                    const fromBottom = obstacleBottom - characterTop;
+                    const fromLeft = characterRight - obstacleLeft;
+                    const fromRight = obstacleRight - characterLeft;
+
+                    const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
+
+                    if (smallest === fromTop && isMovingDown) {
+                        // Collision from top
+                        character.y = obstacleTop - character.height;
                         character.speedY = 0;
                         isSupported = true;
-                        if (obstacle.type === 'superJump') {
-                            character.onSuperJumpBlock = true;
+                        character.onSuperJumpBlock = obstacle.type === 'superJump';
+                    } else if (smallest === fromBottom && character.speedY < 0) {
+                        // Collision from bottom
+                        character.y = obstacleBottom;
+                        character.speedY = 0;
+                    } else if (smallest === fromLeft || smallest === fromRight) {
+                        // Collision from left or right
+                        character.speedX *= -1;
+                        character.direction = character.speedX > 0 ? "right" : "left";
+                        if (smallest === fromLeft) {
+                            character.x = obstacleLeft - character.width;
+                        } else {
+                            character.x = obstacleRight;
                         }
                     }
                 }
             });
 
+            // Update ground status
             character.onGround = isSupported;
 
-            // Prevent falling below the ground
+            // Ground collision
             if (character.y + character.height >= canvas.height) {
                 character.y = canvas.height - character.height;
                 character.speedY = 0;
@@ -228,13 +217,9 @@
         // Start game after resources load
         brickTexture.onload = () => {
             superJumpBlockTexture.onload = () => {
-                boostLeftTexture.onload = () => {
-                    boostRightTexture.onload = () => {
-                        rollLeftSprite.onload = () => {
-                            rollRightSprite.onload = () => {
-                                gameLoop();
-                            };
-                        };
+                rollLeftSprite.onload = () => {
+                    rollRightSprite.onload = () => {
+                        gameLoop();
                     };
                 };
             };
