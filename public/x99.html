@@ -153,25 +153,32 @@
                     const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
                     if (smallest === fromTop && character.speedY >= 0) {
+                        // Collision from top
                         character.y = obstacle.y - character.height;
                         character.speedY = 0;
                         character.onGround = true;
                         if (obstacle.type === 'superJump') character.speedY = -16; // Super jump strength
                     } else if (smallest === fromBottom) {
+                        // Collision from below
                         character.y = obstacle.y + obstacle.height;
                         character.speedY = 0;
                     } else if (smallest === fromLeft) {
+                        // Collision from left
                         character.x = obstacle.x - character.width;
-                        character.speedX = 0; // Stop character from passing through walls
+                        character.speedX = -Math.abs(character.speedX);
+                        character.direction = "left";
                     } else if (smallest === fromRight) {
+                        // Collision from right
                         character.x = obstacle.x + obstacle.width;
-                        character.speedX = 0;
+                        character.speedX = Math.abs(character.speedX);
+                        character.direction = "right";
                     }
 
                     if (obstacle.type === 'boost') applyBoost();
                 }
             });
 
+            // Ground collision
             if (character.y + character.height >= canvas.height) {
                 character.y = canvas.height - character.height;
                 character.speedY = 0;
