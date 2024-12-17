@@ -56,8 +56,10 @@
             speedY: 0,
             gravity: 0.5,
             jumpStrength: -12,
+            superJumpStrength: -16,
             boosted: false,
             onGround: false,
+            onSuperJumpBlock: false,
             direction: "right"
         };
 
@@ -75,10 +77,9 @@
             { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
             { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
             { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
-            { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
+            { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'boost' },
             { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'normal' },
             { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' },
-            { x: 500, y: canvas.height - 50, width: 100, height: 50, type: 'boost' } // Boost block
         ];
 
         function applyBoost() {
@@ -137,6 +138,7 @@
             character.speedY += character.gravity;
 
             character.onGround = false;
+            character.onSuperJumpBlock = false;
 
             obstacles.forEach(obstacle => {
                 if (
@@ -157,7 +159,10 @@
                         character.y = obstacle.y - character.height;
                         character.speedY = 0;
                         character.onGround = true;
-                        if (obstacle.type === 'superJump') character.speedY = -16; // Super jump strength
+
+                        if (obstacle.type === 'superJump') {
+                            character.onSuperJumpBlock = true;
+                        }
                     } else if (smallest === fromBottom) {
                         // Collision from below
                         character.y = obstacle.y + obstacle.height;
@@ -199,7 +204,11 @@
 
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && character.onGround) {
-                character.speedY = character.jumpStrength;
+                if (character.onSuperJumpBlock) {
+                    character.speedY = character.superJumpStrength;
+                } else {
+                    character.speedY = character.jumpStrength;
+                }
                 character.onGround = false;
             }
         });
