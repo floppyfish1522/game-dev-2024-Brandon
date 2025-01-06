@@ -3,76 +3,119 @@
    let myGlobalX = 0;
    let myClock;
    let myScore = 10;
-   let myGun01;
-   let myGun02;
-   let myShooting = 1;
+   let beams = []; // Store active beams
 
    // global functions here
    function myHitOther(my1, my2) {
-      left1 = parseInt(document.getElementById(my1).style.left);
-      right1 = left1 + parseInt(document.getElementById(my1).style.width);
-      top1 = parseInt(document.getElementById(my1).style.top);
-      bottom1 = top1 + parseInt(document.getElementById(my1).style.height);
-      left2 = parseInt(document.getElementById(my2).style.left);
-      right2 = left2 + parseInt(document.getElementById(my2).style.width);
-      top2 = parseInt(document.getElementById(my2).style.top);
-      bottom2 = top2 + parseInt(document.getElementById(my2).style.height);
-      if (
-         right1 >= left2 &&
-         bottom1 >= top2 &&
-         left1 <= right2 &&
-         top1 <= bottom2
-      ) {
-         return true;
-      }
+      const el1 = document.getElementById(my1);
+      const el2 = document.getElementById(my2);
+      const rect1 = el1.getBoundingClientRect();
+      const rect2 = el2.getBoundingClientRect();
+      return (
+         rect1.right >= rect2.left &&
+         rect1.bottom >= rect2.top &&
+         rect1.left <= rect2.right &&
+         rect1.top <= rect2.bottom
+      );
    }
 
    function myCheckHit() {
-      document.all.myText01.value = myScore; // show the present score
+      document.getElementById("myText01").value = myScore; // show the present score
+
+      // Check collisions for each beam
+      beams.forEach((beam) => {
+         const beamEl = document.getElementById(beam.id);
+         if (myHitOther(beam.id, "myImg03")) {
+            document.getElementById("myText01").value = "You shot myImg03!";
+            beamEl.remove(); // Remove the beam
+            myScore += 1;
+         }
+      });
 
       if (myHitOther("myImg01", "myImg02")) {
          document.getElementById("myImg01").style.left = "20px";
-         document.all.myText01.value = "You hit myImg02";
+         document.getElementById("myText01").value = "You hit myImg02";
          myScore -= 1;
       }
 
       if (myHitOther("myImg01", "myImg03")) {
-         //alert('you lose')
          document.getElementById("myImg01").style.left = "20px";
-         document.all.myText01.value = "You hit myImg03";
+         document.getElementById("myText01").value = "You hit myImg03";
          myScore -= 1;
       }
 
-      if (myHitOther("myBullet01", "myImg03")) {
-         clearInterval(myGun01);
-         document.getElementById("myBullet01").style.left = "-200px";
-         document.all.myText01.value = "You shot myImg03";
-         myScore += 1;
-      }
-
-      if (myHitOther("myBullet02", "myImg03")) {
-         clearInterval(myGun02);
-         document.getElementById("myBullet02").style.left = "-200px";
-         document.all.myText01.value = "You shot myImg03";
-         myScore += 1;
-      }
-
-      // you LOSE refresh the page
+      // You LOSE refresh the page
       if (myScore <= 0) {
-         document.all.myText01.value = "You Lose scrore at zero!";
-         alert("Sorry you lose");
+         document.getElementById("myText01").value = "You Lose score at zero!";
+         alert("Sorry, you lose");
          location.reload();
       }
 
-      // YOU WIN and go to next level!
+      // YOU WIN and go to the next level
       if (myHitOther("myImg01", "myImg04")) {
-         document.all.myText01.value =
+         document.getElementById("myText01").value =
             "You hit myImg04 and you win the game!";
          alert("You Win, now go to the next level");
          document.getElementById("myImg01").style.left = "20px";
          location = "https://www.google.ca";
       }
    }
+
+   function shootBeam(event) {
+      // Get the shooting direction
+      const player = document.getElementById("myImg01");
+      const playerRect = player.getBoundingClientRect();
+      const playerCenterX = playerRect.left + playerRect.width / 2;
+      const playerCenterY = playerRect.top + playerRect.height / 2;
+
+      const targetX = event.clientX;
+      const targetY = event.clientY;
+
+      const angle = Math.atan2(targetY - playerCenterY, targetX - playerCenterX);
+
+      // Create the beam
+      const beam = document.createElement("div");
+      const beamId = `beam-${Date.now()}`;
+      beam.id = beamId;
+      beam.style.position = "absolute";
+      beam.style.width = "5px";
+      beam.style.height = "1000px";
+      beam.style.background = "red";
+      beam.style.transformOrigin = "top center";
+      beam.style.left = playerCenterX + "px";
+      beam.style.top = playerCenterY + "px";
+      beam.style.transform = `rotate(${angle}rad)`;
+      document.body.appendChild(beam);
+
+      // Store the beam
+      beams.push({ id: beamId, angle });
+
+      // Move the beam
+      const beamSpeed = 20;
+      const interval = setInterval(() => {
+         const currentLeft = parseFloat(beam.style.left);
+         const currentTop = parseFloat(beam.style.top);
+
+         beam.style.left = currentLeft + Math.cos(angle) * beamSpeed + "px";
+         beam.style.top = currentTop + Math.sin(angle) * beamSpeed + "px";
+
+         // Remove the beam if it goes off-screen
+         if (
+            currentLeft < 0 ||
+            currentLeft > window.innerWidth ||
+            currentTop < 0 ||
+            currentTop > window.innerHeight
+         ) {
+            clearInterval(interval);
+            beam.remove();
+         }
+
+         myCheckHit();
+      }, 20);
+   }
+
+   // Event listener for shooting
+   document.addEventListener("click", shootBeam);
 </script>
 
 <body
@@ -81,7 +124,7 @@
    background="myBackground01.jpg"
    onkeydown="
 {
-   document.all.myText01.value = event.key;
+   document.getElementById('myText01').value = event.key;
 
    if (event.key === 'd') { // d = go right
       document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px';
@@ -102,15 +145,15 @@
    <h1 align="center"><font color="Yellow">T4A06 Bullet by Fred</font></h1>
    <input id="myText01" type="text" value="" size="50" placeholder="Feedback here"><br>
 
+   <!-- Main character's image (myImg01) updated -->
    <img
       id="myImg01"
-      src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
+      src="https://media.licdn.com/dms/image/v2/C5603AQHFrp-bujAh5g/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516969759342?e=2147483647&v=beta&t=bU8c31zVivYN7x39ihu54hkEZt-JwlCTTCWRUrIs3xo"
       style="position:absolute; width:100px; height:100px; left:10px; top:190px;"
    >
+
+   <!-- Other images for interaction -->
    <img id="myImg02" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left:350px; top:190px;">
    <img id="myImg03" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left:500px; top:190px;">
    <img id="myImg04" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left:500px; top:400px;">
-
-   <img id="myBullet01" src="myImgNew.jpg" style="position:absolute; width:10px; height:10px; left:130px; top:190px;">
-   <img id="myBullet02" src="myImgNew.jpg" style="position:absolute; width:10px; height:10px; left:150px; top:190px;">
 </body>
