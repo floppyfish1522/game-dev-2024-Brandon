@@ -1,178 +1,246 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-   <title>Player and Beam Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            border: 2px solid black;
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
-<body id="myBody" style="background: url('https://static.vecteezy.com/system/resources/previews/009/273/206/large_2x/a-large-meadow-in-the-background-is-the-sky-nature-background-image-concept-free-photo.jpg') repeat; background-size: 80%;" 
-   onkeydown="{
-      document.all.myText01.value = event.key;
-      if (event.key === 'd') { // Move right
-         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px';
-      }
-      if (event.key === 'a') { // Move left
-         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px';
-      }
-      if (event.key === 's') { // Move down
-         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px';
-      }
-      if (event.key === 'w') { // Move up
-         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px';
-      }
-      myCheckHit();
-   }">
+<body>
+    <canvas id="gameCanvas"></canvas>
 
-<h1 align="center"><font color="Yellow">T4A06 Bullet by Fred</font></h1>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-<input id="myText01" type="text" value="" size="50" placeholder="Feedback here"><br>
-   
-<img
-   id="myImg01"
-   src="https://media.licdn.com/dms/image/v2/C5603AQHFrp-bujAh5g/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516969759342?e=2147483647&v=beta&t=bU8c31zVivYN7x39ihu54hkEZt-JwlCTTCWRUrIs3xo"
-   style="position:absolute; width:100px; height:80px; left:10px; top:190px;"
->
-<img
-   id="myImg02"
-   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:750px; top:100px;"
->
-<img
-   id="myImg03"
-   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:750px; top:300px;"
->
-<img
-   id="myImg04"
-   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:750px; top:500px;"
->
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-<script>
-   // Global variables
-   let beams = []; // Store active beams
-   let enemies = [
-      { id: "myImg02", stopped: false },
-      { id: "myImg03", stopped: false },
-      { id: "myImg04", stopped: false }
-   ];
+        // Load textures and character sprites
+        const brickTexture = new Image();
+        brickTexture.src = './brick-wall-lvl1.png';
 
-   // Collision detection
-   function myHitOther(my1, my2) {
-      const el1 = document.getElementById(my1);
-      const el2 = document.getElementById(my2);
-      const rect1 = el1.getBoundingClientRect();
-      const rect2 = el2.getBoundingClientRect();
-      return (
-         rect1.right >= rect2.left &&
-         rect1.bottom >= rect2.top &&
-         rect1.left <= rect2.right &&
-         rect1.top <= rect2.bottom
-      );
-   }
+        const superJumpBlockTexture = new Image();
+        superJumpBlockTexture.src = './super-jump-block.png';
 
-   // Check for collisions
-   function myCheckHit() {
-      // Check beam collisions
-      beams.forEach((beam, index) => {
-         const beamEl = document.getElementById(beam.id);
-         enemies.forEach((enemy) => {
-            if (myHitOther(beam.id, enemy.id) && !enemy.stopped) {
-               beamEl.remove();
-               beams.splice(index, 1);
-               enemy.stopped = true;
-               document.getElementById(enemy.id).setAttribute("data-stopped", "true");
+        const boostBlockTexture = new Image();
+        boostBlockTexture.src = './boost-right.png';
+
+        const rollLeftSprite = new Image();
+        rollLeftSprite.src = 'Bulbus_roll_left.png';
+
+        const rollRightSprite = new Image();
+        rollRightSprite.src = 'Bulbus_roll_right.png';
+
+        // Character properties
+        let character = {
+            x: 100,
+            y: canvas.height - 150,
+            width: 50,
+            height: 50,
+            speedX: 3,
+            speedY: 0,
+            gravity: 0.5,
+            jumpStrength: -12,
+            superJumpStrength: -16,
+            boosted: false,
+            onGround: false,
+            onSuperJumpBlock: false,
+            direction: "right"
+        };
+
+        const frameWidth = 50;
+        const frameHeight = 50;
+        const totalFrames = 8;
+        const frameDelay = 5;
+        let currentFrame = 0;
+        let frameCounter = 0;
+
+        // Unified obstacles array (original setup + 1 boost block)
+        const obstacles = [
+            { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' },
+            { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' },
+            { x: 1350, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
+            { x: 1150, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
+            { x: 250, y: canvas.height - 350, width: 800, height: 50, type: 'normal' },
+            { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'boost' },
+            { x: 200, y: canvas.height - 550, width: 1050, height: 50, type: 'normal' },
+            { x: 1200, y: canvas.height - 500, width: 1050, height: 50, type: 'normal' },
+            { x: 1450, y: canvas.height - 600, width: 350, height: 50, type: 'normal' },
+            { x: 1350, y: canvas.height - 650, width: 100, height: 50, type: 'normal' },
+            { x: 1100, y: canvas.height - 900, width: 800, height: 50, type: 'normal' },
+            { x: 1250, y: canvas.height - 850, width: 50, height: 50, type: 'normal' },
+            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' },
+            { x: 800, y: canvas.height - 650, width: 150, height: 50, type: 'normal' },
+            { x: 1100, y: canvas.height - 750, width: 150, height: 100, type: 'normal' },
+        ];
+
+        function applyBoost() {
+            if (character.boosted) return; // Avoid multiple boosts
+            character.boosted = true;
+
+            const originalSpeed = Math.abs(character.speedX);
+            character.speedX = character.direction === "right" ? originalSpeed * 3 : -originalSpeed * 3;
+
+            // Revert speed after 1 second
+            setTimeout(() => {
+                character.speedX = character.direction === "right" ? originalSpeed : -originalSpeed;
+                character.boosted = false;
+            }, 1000);
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                let texture;
+                switch (obstacle.type) {
+                    case 'superJump':
+                        texture = superJumpBlockTexture;
+                        break;
+                    case 'boost':
+                        texture = boostBlockTexture;
+                        break;
+                    default:
+                        texture = brickTexture;
+                }
+                for (let x = 0; x < obstacle.width; x += 50) {
+                    for (let y = 0; y < obstacle.height; y += 50) {
+                        ctx.drawImage(texture, obstacle.x + x, obstacle.y + y, 50, 50);
+                    }
+                }
+            });
+        }
+
+        function drawCharacter() {
+            const sprite = character.direction === "right" ? rollRightSprite : rollLeftSprite;
+            ctx.drawImage(
+                sprite,
+                currentFrame * frameWidth, 0, frameWidth, frameHeight,
+                character.x, character.y, character.width, character.height
+            );
+
+            frameCounter++;
+            if (frameCounter >= frameDelay) {
+                currentFrame = (currentFrame + 1) % totalFrames;
+                frameCounter = 0;
             }
-         });
-      });
+        }
 
-      // Check player collisions with enemies
-      enemies.forEach((enemy) => {
-         const enemyEl = document.getElementById(enemy.id);
-         if (myHitOther("myImg01", enemy.id)) {
-            alert("You lose :(");
-            location.reload();
-         }
-      });
+        function updateCharacter() {
+            character.x += character.speedX;
+            character.y += character.speedY;
+            character.speedY += character.gravity;
 
-      // Check for win condition
-      if (enemies.every((enemy) => enemy.stopped)) {
-         alert("You won!!!");
-         location = "https://floppyfish1522.github.io/game-dev-2024-Brandon/public/Final-Project-level2-Brandon.html";
-      }
-   }
+            character.onGround = false;
+            character.onSuperJumpBlock = false;
 
-   // Enemy movement
-   function moveEnemies() {
-      const player = document.getElementById("myImg01");
-      const playerRect = player.getBoundingClientRect();
+            obstacles.forEach(obstacle => {
+                if (
+                    character.x < obstacle.x + obstacle.width &&
+                    character.x + character.width > obstacle.x &&
+                    character.y < obstacle.y + obstacle.height &&
+                    character.y + character.height > obstacle.y
+                ) {
+                    const fromTop = character.y + character.height - obstacle.y;
+                    const fromBottom = obstacle.y + obstacle.height - character.y;
+                    const fromLeft = character.x + character.width - obstacle.x;
+                    const fromRight = obstacle.x + obstacle.width - character.x;
 
-      enemies.forEach((enemy) => {
-         const enemyEl = document.getElementById(enemy.id);
-         if (enemy.stopped || enemyEl.getAttribute("data-stopped") === "true") return;
+                    const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
-         const enemyRect = enemyEl.getBoundingClientRect();
-         const dx = playerRect.left - enemyRect.left;
-         const dy = playerRect.top - enemyRect.top;
-         const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (smallest === fromTop && character.speedY >= 0) {
+                        // Collision from top
+                        character.y = obstacle.y - character.height;
+                        character.speedY = 0;
+                        character.onGround = true;
 
-         const moveX = (dx / distance) * 1; // Enemy speed
-         const moveY = (dy / distance) * 1;
+                        if (obstacle.type === 'superJump') {
+                            character.onSuperJumpBlock = true;
+                        }
+                    } else if (smallest === fromBottom) {
+                        // Collision from below
+                        character.y = obstacle.y + obstacle.height;
+                        character.speedY = 0;
+                    } else if (smallest === fromLeft) {
+                        // Collision from left
+                        character.x = obstacle.x - character.width;
+                        character.speedX = -Math.abs(character.speedX);
+                        character.direction = "left";
+                    } else if (smallest === fromRight) {
+                        // Collision from right
+                        character.x = obstacle.x + obstacle.width;
+                        character.speedX = Math.abs(character.speedX);
+                        character.direction = "right";
+                    }
 
-         enemyEl.style.left = enemyRect.left + moveX + "px";
-         enemyEl.style.top = enemyRect.top + moveY + "px";
-      });
-   }
+                    if (obstacle.type === 'boost') applyBoost();
+                }
+            });
 
-   setInterval(moveEnemies, 50);
+            // Ground collision
+            if (character.y + character.height >= canvas.height) {
+                character.y = canvas.height - character.height;
+                character.speedY = 0;
+                character.onGround = true;
+            }
 
-   // Shoot a beam
-   function shootBeam(event) {
-      const player = document.getElementById("myImg01");
-      const playerRect = player.getBoundingClientRect();
-      const playerCenterX = playerRect.left + playerRect.width / 2;
-      const playerCenterY = playerRect.top + playerRect.height / 2;
+            // Wall boundaries
+            if (character.x < 0) {
+                character.x = 0;
+                character.speedX = Math.abs(character.speedX); // Bounce right
+                character.direction = "right";
+            } else if (character.x + character.width > canvas.width) {
+                character.x = canvas.width - character.width;
+                character.speedX = -Math.abs(character.speedX); // Bounce left
+                character.direction = "left";
+            }
+        }
 
-      const targetX = event.clientX;
-      const targetY = event.clientY;
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && character.onGround) {
+                if (character.onSuperJumpBlock) {
+                    character.speedY = character.superJumpStrength;
+                } else {
+                    character.speedY = character.jumpStrength;
+                }
+                character.onGround = false;
+            }
+        });
 
-      const angle = Math.atan2(targetY - playerCenterY, targetX - playerCenterX);
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawObstacles();
+            drawCharacter();
+            updateCharacter();
+            requestAnimationFrame(gameLoop);
+        }
 
-      const beam = document.createElement("div");
-      const beamId = `beam-${Date.now()}`;
-      beam.id = beamId;
-      beam.style.position = "absolute";
-      beam.style.width = "5px";
-      beam.style.height = "20px";
-      beam.style.background = "red";
-      beam.style.left = playerCenterX + "px";
-      beam.style.top = playerCenterY + "px";
-      document.body.appendChild(beam);
-
-      beams.push({ id: beamId, angle });
-
-      const beamSpeed = 10;
-      const interval = setInterval(() => {
-         const currentLeft = parseFloat(beam.style.left);
-         const currentTop = parseFloat(beam.style.top);
-
-         beam.style.left = currentLeft + Math.cos(angle) * beamSpeed + "px";
-         beam.style.top = currentTop + Math.sin(angle) * beamSpeed + "px";
-
-         if (
-            currentLeft < 0 ||
-            currentLeft > window.innerWidth ||
-            currentTop < 0 ||
-            currentTop > window.innerHeight
-         ) {
-            clearInterval(interval);
-            beam.remove();
-            beams = beams.filter((b) => b.id !== beamId);
-         }
-
-         myCheckHit();
-      }, 20);
-   }
-
-   document.addEventListener("click", shootBeam);
-</script>
+        // Start game
+        brickTexture.onload = () => {
+            superJumpBlockTexture.onload = () => {
+                boostBlockTexture.onload = () => {
+                    rollLeftSprite.onload = () => {
+                        rollRightSprite.onload = () => {
+                            gameLoop();
+                        };
+                    };
+                };
+            };
+        };
+    </script>
 </body>
 </html>
