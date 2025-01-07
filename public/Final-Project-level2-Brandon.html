@@ -1,229 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            border: 2px solid black;
-            background-color: #f0f0f0;
-        }
-    </style>
+   <title>Player and Beam Game</title>
 </head>
-<body>
-    <canvas id="gameCanvas"></canvas>
+<body id="myBody" style="background: url('https://static.vecteezy.com/system/resources/previews/009/273/206/large_2x/a-large-meadow-in-the-background-is-the-sky-nature-background-image-concept-free-photo.jpg') repeat; background-size: 80%;" 
+   onkeydown="{
+      document.all.myText01.value = event.key;
+      if (event.key === 'd') { // Move right
+         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px';
+      }
+      if (event.key === 'a') { // Move left
+         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px';
+      }
+      if (event.key === 's') { // Move down
+         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px';
+      }
+      if (event.key === 'w') { // Move up
+         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px';
+      }
+      myCheckHit();
+   }">
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+<h1 align="center"><font color="Yellow">T4A06 Bullet by Fred</font></h1>
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+<input id="myText01" type="text" value="" size="50" placeholder="Feedback here"><br>
+   
+<img
+   id="myImg01"
+   src="https://media.licdn.com/dms/image/v2/C5603AQHFrp-bujAh5g/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516969759342?e=2147483647&v=beta&t=bU8c31zVivYN7x39ihu54hkEZt-JwlCTTCWRUrIs3xo"
+   style="position:absolute; width:100px; height:80px; left:10px; top:190px;"
+>
+<img
+   id="myImg02"
+   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
+   style="position:absolute; width:100px; height:80px; left:750px; top:100px;"
+>
+<img
+   id="myImg03"
+   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
+   style="position:absolute; width:100px; height:80px; left:750px; top:300px;"
+>
+<img
+   id="myImg04"
+   src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
+   style="position:absolute; width:100px; height:80px; left:750px; top:500px;"
+>
 
-        // Load textures and character sprites
-        const brickTexture = new Image();
-        brickTexture.src = './brick-wall-lvl1.png'; // Replace with your GitHub-hosted link
+<script>
+   // Global variables
+   let beams = []; // Store active beams
+   let enemies = [
+      { id: "myImg02", stopped: false },
+      { id: "myImg03", stopped: false },
+      { id: "myImg04", stopped: false }
+   ];
 
-        const superJumpBlockTexture = new Image();
-        superJumpBlockTexture.src = './super-jump-block.png';
+   // Collision detection
+   function myHitOther(my1, my2) {
+      const el1 = document.getElementById(my1);
+      const el2 = document.getElementById(my2);
+      const rect1 = el1.getBoundingClientRect();
+      const rect2 = el2.getBoundingClientRect();
+      return (
+         rect1.right >= rect2.left &&
+         rect1.bottom >= rect2.top &&
+         rect1.left <= rect2.right &&
+         rect1.top <= rect2.bottom
+      );
+   }
 
-        const rollLeftSprite = new Image();
-        rollLeftSprite.src = 'Bulbus_roll_left.png';
-
-        const rollRightSprite = new Image();
-        rollRightSprite.src = 'Bulbus_roll_right.png';
-
-        // Character properties
-        let character = {
-            x: 100,
-            y: canvas.height - 50,
-            width: 50,
-            height: 50,
-            speedX: 3,
-            speedY: 0,
-            gravity: 0.5,
-            jumpStrength: -12,
-            superJumpStrength: -16,
-            onGround: false,
-            onSuperJumpBlock: false,
-            direction: "right"
-        };
-
-        // Sprite animation properties
-        const frameWidth = 50;
-        const frameHeight = 50;
-        const totalFrames = 8;
-        const frameDelay = 5;
-        let currentFrame = 0;
-        let frameCounter = 0;
-
-        // Unified obstacles array
-        const obstacles = [
-            { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' },
-            { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' },
-            { x: 1500, y: canvas.height - 250, width: 100, height: 50, type: 'normal' },
-            { x: 1300, y: canvas.height - 300, width: 100, height: 50, type: 'normal' },
-            { x: 250, y: canvas.height - 350, width: 950, height: 50, type: 'normal' },
-            { x: 0, y: canvas.height - 700, width: 50, height: 300, type: 'normal' },
-            { x: 200, y: canvas.height - 550, width: 950, height: 50, type: 'normal' },
-            { x: 150, y: canvas.height - 350, width: 100, height: 50, type: 'superJump' }
-        ];
-
-        // Draw the animated character
-        function drawCharacter() {
-            const sprite = character.direction === "right" ? rollRightSprite : rollLeftSprite;
-
-            // Draw the current frame of the sprite
-            ctx.drawImage(
-                sprite,
-                currentFrame * frameWidth, 0,
-                frameWidth, frameHeight,
-                character.x, character.y,
-                character.width, character.height
-            );
-
-            // Update animation frame
-            frameCounter++;
-            if (frameCounter >= frameDelay) {
-                currentFrame = (currentFrame + 1) % totalFrames;
-                frameCounter = 0;
+   // Check for collisions
+   function myCheckHit() {
+      // Check beam collisions
+      beams.forEach((beam, index) => {
+         const beamEl = document.getElementById(beam.id);
+         enemies.forEach((enemy) => {
+            if (myHitOther(beam.id, enemy.id) && !enemy.stopped) {
+               beamEl.remove();
+               beams.splice(index, 1);
+               enemy.stopped = true;
+               document.getElementById(enemy.id).setAttribute("data-stopped", "true");
             }
-        }
+         });
+      });
 
-        // Draw obstacles
-        function drawObstacles() {
-            obstacles.forEach(obstacle => {
-                const texture = obstacle.type === 'superJump' ? superJumpBlockTexture : brickTexture;
-                for (let x = 0; x < obstacle.width; x += 50) {
-                    for (let y = 0; y < obstacle.height; y += 50) {
-                        ctx.drawImage(texture, obstacle.x + x, obstacle.y + y, 50, 50);
-                    }
-                }
-            });
-        }
+      // Check player collisions with enemies
+      enemies.forEach((enemy) => {
+         const enemyEl = document.getElementById(enemy.id);
+         if (myHitOther("myImg01", enemy.id)) {
+            alert("You lose :(");
+            location.reload();
+         }
+      });
 
-        // Update character position and handle collisions
-        function updateCharacter() {
-            character.x += character.speedX;
-            character.y += character.speedY;
+      // Check for win condition
+      if (enemies.every((enemy) => enemy.stopped)) {
+         alert("You won!!!");
+         location = "https://floppyfish1522.github.io/game-dev-2024-Brandon/public/Final-Project-level2-Brandon.html";
+      }
+   }
 
-            if (!character.onGround) {
-                character.speedY += character.gravity;
-            }
+   // Enemy movement
+   function moveEnemies() {
+      const player = document.getElementById("myImg01");
+      const playerRect = player.getBoundingClientRect();
 
-            let isSupported = false;
-            character.onSuperJumpBlock = false;
+      enemies.forEach((enemy) => {
+         const enemyEl = document.getElementById(enemy.id);
+         if (enemy.stopped || enemyEl.getAttribute("data-stopped") === "true") return;
 
-            obstacles.sort((a, b) => a.y - b.y); // Sort obstacles by vertical position
+         const enemyRect = enemyEl.getBoundingClientRect();
+         const dx = playerRect.left - enemyRect.left;
+         const dy = playerRect.top - enemyRect.top;
+         const distance = Math.sqrt(dx * dx + dy * dy);
 
-            obstacles.forEach(obstacle => {
-                const nextY = character.y + character.speedY;
-                const isMovingDown = character.speedY > 0;
-                const isColliding =
-                    character.x + character.width > obstacle.x &&
-                    character.x < obstacle.x + obstacle.width &&
-                    character.y + character.height > obstacle.y &&
-                    character.y < obstacle.y + obstacle.height;
+         const moveX = (dx / distance) * 1; // Enemy speed
+         const moveY = (dy / distance) * 1;
 
-                if (isColliding) {
-                    const characterBottom = character.y + character.height;
-                    const characterTop = character.y;
-                    const characterRight = character.x + character.width;
-                    const characterLeft = character.x;
+         enemyEl.style.left = enemyRect.left + moveX + "px";
+         enemyEl.style.top = enemyRect.top + moveY + "px";
+      });
+   }
 
-                    const obstacleBottom = obstacle.y + obstacle.height;
-                    const obstacleTop = obstacle.y;
-                    const obstacleRight = obstacle.x + obstacle.width;
-                    const obstacleLeft = obstacle.x;
+   setInterval(moveEnemies, 50);
 
-                    const fromTop = characterBottom - obstacleTop;
-                    const fromBottom = obstacleBottom - characterTop;
-                    const fromLeft = characterRight - obstacleLeft;
-                    const fromRight = obstacleRight - characterLeft;
+   // Shoot a beam
+   function shootBeam(event) {
+      const player = document.getElementById("myImg01");
+      const playerRect = player.getBoundingClientRect();
+      const playerCenterX = playerRect.left + playerRect.width / 2;
+      const playerCenterY = playerRect.top + playerRect.height / 2;
 
-                    const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
+      const targetX = event.clientX;
+      const targetY = event.clientY;
 
-                    if (smallest === fromTop && isMovingDown) {
-                        // Collision from top
-                        character.y = obstacleTop - character.height;
-                        character.speedY = 0;
-                        isSupported = true;
-                        character.onSuperJumpBlock = obstacle.type === 'superJump';
-                    } else if (smallest === fromBottom && character.speedY < 0) {
-                        // Collision from bottom
-                        character.y = obstacleBottom;
-                        character.speedY = 0;
-                    } else if (smallest === fromLeft || smallest === fromRight) {
-                        // Collision from left or right
-                        character.speedX *= -1;
-                        character.direction = character.speedX > 0 ? "right" : "left";
-                        if (smallest === fromLeft) {
-                            character.x = obstacleLeft - character.width;
-                        } else {
-                            character.x = obstacleRight;
-                        }
-                    }
-                }
-            });
+      const angle = Math.atan2(targetY - playerCenterY, targetX - playerCenterX);
 
-            // Update ground status
-            character.onGround = isSupported;
+      const beam = document.createElement("div");
+      const beamId = `beam-${Date.now()}`;
+      beam.id = beamId;
+      beam.style.position = "absolute";
+      beam.style.width = "5px";
+      beam.style.height = "20px";
+      beam.style.background = "red";
+      beam.style.left = playerCenterX + "px";
+      beam.style.top = playerCenterY + "px";
+      document.body.appendChild(beam);
 
-            // Ground collision
-            if (character.y + character.height >= canvas.height) {
-                character.y = canvas.height - character.height;
-                character.speedY = 0;
-                character.onGround = true;
-            }
+      beams.push({ id: beamId, angle });
 
-            // Left and right screen boundaries
-            if (character.x + character.width >= canvas.width || character.x <= 0) {
-                character.speedX *= -1;
-                character.direction = character.speedX > 0 ? "right" : "left";
-            }
-        }
+      const beamSpeed = 10;
+      const interval = setInterval(() => {
+         const currentLeft = parseFloat(beam.style.left);
+         const currentTop = parseFloat(beam.style.top);
 
-        // Handle jump
-        window.addEventListener('keydown', (event) => {
-            if (event.code === 'Space' && character.onGround) {
-                if (character.onSuperJumpBlock) {
-                    character.speedY = character.superJumpStrength;
-                } else {
-                    character.speedY = character.jumpStrength;
-                }
-                character.onGround = false;
-            }
-        });
+         beam.style.left = currentLeft + Math.cos(angle) * beamSpeed + "px";
+         beam.style.top = currentTop + Math.sin(angle) * beamSpeed + "px";
 
-        // Game loop
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawObstacles();
-            drawCharacter();
-            updateCharacter();
-            requestAnimationFrame(gameLoop);
-        }
+         if (
+            currentLeft < 0 ||
+            currentLeft > window.innerWidth ||
+            currentTop < 0 ||
+            currentTop > window.innerHeight
+         ) {
+            clearInterval(interval);
+            beam.remove();
+            beams = beams.filter((b) => b.id !== beamId);
+         }
 
-        // Start game after resources load
-        brickTexture.onload = () => {
-            superJumpBlockTexture.onload = () => {
-                rollLeftSprite.onload = () => {
-                    rollRightSprite.onload = () => {
-                        gameLoop();
-                    };
-                };
-            };
-        };
-    </script>
+         myCheckHit();
+      }, 20);
+   }
+
+   document.addEventListener("click", shootBeam);
+</script>
 </body>
 </html>
