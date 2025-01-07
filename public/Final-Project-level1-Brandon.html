@@ -3,28 +3,28 @@
 <head>
    <title>Player and Beam Game</title>
 </head>
-<body id="myBody" background="myBackground01.jpg" onkeydown="{
-   document.all.myText01.value = event.key;
-   if (event.key === 'd') { // Move right
-      document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px';
-   }
-   if (event.key === 'a') { // Move left
-      document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px';
-   }
-   if (event.key === 's') { // Move down
-      document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px';
-   }
-   if (event.key === 'w') { // Move up
-      document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px';
-   }
-   myCheckHit();
-}">
+<body id="myBody" style="background: url('https://static.vecteezy.com/system/resources/previews/009/273/206/large_2x/a-large-meadow-in-the-background-is-the-sky-nature-background-image-concept-free-photo.jpg') repeat; background-size: 80%;" 
+   onkeydown="{
+      document.all.myText01.value = event.key;
+      if (event.key === 'd') { // Move right
+         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px';
+      }
+      if (event.key === 'a') { // Move left
+         document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px';
+      }
+      if (event.key === 's') { // Move down
+         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px';
+      }
+      if (event.key === 'w') { // Move up
+         document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px';
+      }
+      myCheckHit();
+   }">
 
 <h1 align="center"><font color="Yellow">T4A06 Bullet by Fred</font></h1>
 
 <input id="myText01" type="text" value="" size="50" placeholder="Feedback here"><br>
    
-<body id="myBody" style="background-repeat:repeat; background-size: 80%" background="https://static.vecteezy.com/system/resources/previews/009/273/206/large_2x/a-large-meadow-in-the-background-is-the-sky-nature-background-image-concept-free-photo.jpg">
 <img
    id="myImg01"
    src="https://media.licdn.com/dms/image/v2/C5603AQHFrp-bujAh5g/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1516969759342?e=2147483647&v=beta&t=bU8c31zVivYN7x39ihu54hkEZt-JwlCTTCWRUrIs3xo"
@@ -48,12 +48,11 @@
 
 <script>
    // Global variables
-   let myScore = 10;
    let beams = []; // Store active beams
    let enemies = [
-      { id: "myImg02", speed: 1 },
-      { id: "myImg03", speed: 1 },
-      { id: "myImg04", speed: 1 }
+      { id: "myImg02", stopped: false },
+      { id: "myImg03", stopped: false },
+      { id: "myImg04", stopped: false }
    ];
 
    // Collision detection
@@ -72,40 +71,32 @@
 
    // Check for collisions
    function myCheckHit() {
-      document.all.myText01.value = myScore;
-
       // Check beam collisions
       beams.forEach((beam, index) => {
          const beamEl = document.getElementById(beam.id);
          enemies.forEach((enemy) => {
-            if (myHitOther(beam.id, enemy.id)) {
-               document.all.myText01.value = `You hit ${enemy.id}!`;
+            if (myHitOther(beam.id, enemy.id) && !enemy.stopped) {
                beamEl.remove();
                beams.splice(index, 1);
+               enemy.stopped = true;
                document.getElementById(enemy.id).setAttribute("data-stopped", "true");
-               myScore += 1;
             }
          });
       });
 
+      // Check player collisions with enemies
       enemies.forEach((enemy) => {
          const enemyEl = document.getElementById(enemy.id);
          if (myHitOther("myImg01", enemy.id)) {
-            document.all.myText01.value = `You hit ${enemy.id}!`;
-            myScore -= 1;
+            alert("You lose :(");
+            location.reload();
          }
       });
 
-      if (myScore <= 0) {
-         document.all.myText01.value = "You lose! Score at zero.";
-         alert("Sorry, you lose!");
-         location.reload();
-      }
-
-      if (myHitOther("myImg01", "myImg04")) {
-         document.all.myText01.value = "You win!";
-         alert("You Win! Proceeding to next level.");
-         location = "https://www.google.ca";
+      // Check for win condition
+      if (enemies.every((enemy) => enemy.stopped)) {
+         alert("You won!!!");
+         location = "https://floppyfish1522.github.io/game-dev-2024-Brandon/public/Final-Project-level2-Brandon.html";
       }
    }
 
@@ -116,15 +107,15 @@
 
       enemies.forEach((enemy) => {
          const enemyEl = document.getElementById(enemy.id);
-         if (enemyEl.getAttribute("data-stopped") === "true") return;
+         if (enemy.stopped || enemyEl.getAttribute("data-stopped") === "true") return;
 
          const enemyRect = enemyEl.getBoundingClientRect();
          const dx = playerRect.left - enemyRect.left;
          const dy = playerRect.top - enemyRect.top;
          const distance = Math.sqrt(dx * dx + dy * dy);
 
-         const moveX = (dx / distance) * enemy.speed;
-         const moveY = (dy / distance) * enemy.speed;
+         const moveX = (dx / distance) * 1; // Enemy speed
+         const moveY = (dy / distance) * 1;
 
          enemyEl.style.left = enemyRect.left + moveX + "px";
          enemyEl.style.top = enemyRect.top + moveY + "px";
@@ -152,7 +143,6 @@
       beam.style.width = "5px";
       beam.style.height = "20px";
       beam.style.background = "red";
-      beam.style.borderRadius = "50%";
       beam.style.left = playerCenterX + "px";
       beam.style.top = playerCenterY + "px";
       document.body.appendChild(beam);
