@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Final Project Level 1</title>
+   <title>Player and Beam Game</title>
 </head>
 <body id="myBody" background="myBackground01.jpg" onkeydown="{
    document.all.myText01.value = event.key;
@@ -32,23 +32,28 @@
 <img
    id="myImg02"
    src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:350px; top:190px;"
+   style="position:absolute; width:100px; height:80px; left:750px; top:100px;"
 >
 <img
    id="myImg03"
    src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:500px; top:190px;"
+   style="position:absolute; width:100px; height:80px; left:750px; top:300px;"
 >
 <img
    id="myImg04"
    src="https://th.bing.com/th/id/OIP.9IGrRmLcJC_neDASvaHSCAHaHa?rs=1&pid=ImgDetMain"
-   style="position:absolute; width:100px; height:80px; left:500px; top:400px;"
+   style="position:absolute; width:100px; height:80px; left:750px; top:500px;"
 >
 
 <script>
    // Global variables
    let myScore = 10;
    let beams = []; // Store active beams
+   let enemies = [
+      { id: "myImg02", speed: 1 },
+      { id: "myImg03", speed: 1 },
+      { id: "myImg04", speed: 1 }
+   ];
 
    // Collision detection
    function myHitOther(my1, my2) {
@@ -71,25 +76,24 @@
       // Check beam collisions
       beams.forEach((beam, index) => {
          const beamEl = document.getElementById(beam.id);
-         if (myHitOther(beam.id, "myImg03")) {
-            document.all.myText01.value = "You shot myImg03!";
-            beamEl.remove();
-            beams.splice(index, 1);
-            myScore += 1;
-         }
+         enemies.forEach((enemy) => {
+            if (myHitOther(beam.id, enemy.id)) {
+               document.all.myText01.value = `You hit ${enemy.id}!`;
+               beamEl.remove();
+               beams.splice(index, 1);
+               document.getElementById(enemy.id).setAttribute("data-stopped", "true");
+               myScore += 1;
+            }
+         });
       });
 
-      if (myHitOther("myImg01", "myImg02")) {
-         document.getElementById("myImg01").style.left = "20px";
-         document.all.myText01.value = "You hit myImg02!";
-         myScore -= 1;
-      }
-
-      if (myHitOther("myImg01", "myImg03")) {
-         document.getElementById("myImg01").style.left = "20px";
-         document.all.myText01.value = "You hit myImg03!";
-         myScore -= 1;
-      }
+      enemies.forEach((enemy) => {
+         const enemyEl = document.getElementById(enemy.id);
+         if (myHitOther("myImg01", enemy.id)) {
+            document.all.myText01.value = `You hit ${enemy.id}!`;
+            myScore -= 1;
+         }
+      });
 
       if (myScore <= 0) {
          document.all.myText01.value = "You lose! Score at zero.";
@@ -103,6 +107,30 @@
          location = "https://www.google.ca";
       }
    }
+
+   // Enemy movement
+   function moveEnemies() {
+      const player = document.getElementById("myImg01");
+      const playerRect = player.getBoundingClientRect();
+
+      enemies.forEach((enemy) => {
+         const enemyEl = document.getElementById(enemy.id);
+         if (enemyEl.getAttribute("data-stopped") === "true") return;
+
+         const enemyRect = enemyEl.getBoundingClientRect();
+         const dx = playerRect.left - enemyRect.left;
+         const dy = playerRect.top - enemyRect.top;
+         const distance = Math.sqrt(dx * dx + dy * dy);
+
+         const moveX = (dx / distance) * enemy.speed;
+         const moveY = (dy / distance) * enemy.speed;
+
+         enemyEl.style.left = enemyRect.left + moveX + "px";
+         enemyEl.style.top = enemyRect.top + moveY + "px";
+      });
+   }
+
+   setInterval(moveEnemies, 50);
 
    // Shoot a beam
    function shootBeam(event) {
