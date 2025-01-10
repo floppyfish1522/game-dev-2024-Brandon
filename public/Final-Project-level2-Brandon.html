@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +16,6 @@
             width: 100vw;
             height: 100vh;
             border: 2px solid black;
-            background-color: #f0f0f0;
         }
     </style>
 </head>
@@ -30,6 +28,10 @@
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+
+        // Load background image
+        const backgroundImage = new Image();
+        backgroundImage.src = 'https://img.itch.zone/aW1nLzU1OTg3NjMucG5n/original/y1cVuL.png';
 
         // Load textures and character sprites
         const brickTexture = new Image();
@@ -71,7 +73,7 @@
         let currentFrame = 0;
         let frameCounter = 0;
 
-        // Unified obstacles array (original setup + 1 boost block)
+        // Unified obstacles array
         const obstacles = [
             { x: 750, y: canvas.height - 50, width: 150, height: 50, type: 'normal' },
             { x: 1000, y: canvas.height - 150, width: 1000, height: 150, type: 'normal' },
@@ -92,13 +94,12 @@
         ];
 
         function applyBoost() {
-            if (character.boosted) return; // Avoid multiple boosts
+            if (character.boosted) return;
             character.boosted = true;
 
             const originalSpeed = Math.abs(character.speedX);
             character.speedX = character.direction === "right" ? originalSpeed * 3 : -originalSpeed * 3;
 
-            // Revert speed after 1 second
             setTimeout(() => {
                 character.speedX = character.direction === "right" ? originalSpeed : -originalSpeed;
                 character.boosted = false;
@@ -164,7 +165,6 @@
                     const smallest = Math.min(fromTop, fromBottom, fromLeft, fromRight);
 
                     if (smallest === fromTop && character.speedY >= 0) {
-                        // Collision from top
                         character.y = obstacle.y - character.height;
                         character.speedY = 0;
                         character.onGround = true;
@@ -173,16 +173,13 @@
                             character.onSuperJumpBlock = true;
                         }
                     } else if (smallest === fromBottom) {
-                        // Collision from below
                         character.y = obstacle.y + obstacle.height;
                         character.speedY = 0;
                     } else if (smallest === fromLeft) {
-                        // Collision from left
                         character.x = obstacle.x - character.width;
                         character.speedX = -Math.abs(character.speedX);
                         character.direction = "left";
                     } else if (smallest === fromRight) {
-                        // Collision from right
                         character.x = obstacle.x + obstacle.width;
                         character.speedX = Math.abs(character.speedX);
                         character.direction = "right";
@@ -192,21 +189,19 @@
                 }
             });
 
-            // Ground collision
             if (character.y + character.height >= canvas.height) {
                 character.y = canvas.height - character.height;
                 character.speedY = 0;
                 character.onGround = true;
             }
 
-            // Wall boundaries
             if (character.x < 0) {
                 character.x = 0;
-                character.speedX = Math.abs(character.speedX); // Bounce right
+                character.speedX = Math.abs(character.speedX);
                 character.direction = "right";
             } else if (character.x + character.width > canvas.width) {
                 character.x = canvas.width - character.width;
-                character.speedX = -Math.abs(character.speedX); // Bounce left
+                character.speedX = -Math.abs(character.speedX);
                 character.direction = "left";
             }
         }
@@ -224,19 +219,21 @@
 
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height); // Draw the background
             drawObstacles();
             drawCharacter();
             updateCharacter();
             requestAnimationFrame(gameLoop);
         }
 
-        // Start game
-        brickTexture.onload = () => {
-            superJumpBlockTexture.onload = () => {
-                boostBlockTexture.onload = () => {
-                    rollLeftSprite.onload = () => {
-                        rollRightSprite.onload = () => {
-                            gameLoop();
+        backgroundImage.onload = () => {
+            brickTexture.onload = () => {
+                superJumpBlockTexture.onload = () => {
+                    boostBlockTexture.onload = () => {
+                        rollLeftSprite.onload = () => {
+                            rollRightSprite.onload = () => {
+                                gameLoop();
+                            };
                         };
                     };
                 };
