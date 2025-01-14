@@ -1,47 +1,42 @@
-<title>t2a20-spy-Brandon</title>
+<body>
+    <h1 align="center">t2a06-spy-name.html</h1>
+    <textarea id="myArea01" rows="4" cols="70">Hello how are you?</textarea><br> 
 
-<textarea id="myArea01" rows=4 cols=70>Hello how are you</textarea><br>
+    <input type="button" value="Encrypt" onclick="{
+        let myTemp = '';
+        let myString = document.getElementById('myArea01').value.split('');
+        let encrypted = '';
 
-<input type=button value="encrypt" onclick="{
-  let myTemp = ''
-  myString = document.getElementById('myArea01').value.toLowerCase().split('')
-  for (let myLooop=0; myLoop < myString.length; myLoop++){
-    myTemp = myString[myLoop]
-    if (myString[myLoop] == 'q') {myTemp  = 'w'}
-    if (myString[myLoop] == 'w') {myTemp  = 'e'}
-    if (myString[myLoop] == 'e') {myTemp  = 'r'}
-    if (myString[myLoop] == 'r') {myTemp  = 't'}
-    if (myString[myLoop] == 't') {myTemp  = 'y'}
-    if (myString[myLoop] == 'y') {myTemp  = 'u'}
-    if (myString[myLoop] == 'u') {myTemp  = 'i'}
-    if (myString[myLoop] == 'i') {myTemp  = 'o'}
-    if (myString[myLoop] == 'o') {myTemp  = 'p'}
-    if (myString[myLoop] == 'p') {myTemp  = 'a'}
-    if (myString[myLoop] == 'a') {myTemp  = 's'}
-    if (myString[myLoop] == 's') {myTemp  = 'd'}
-    if (myString[myLoop] == 'd') {myTemp  = 'f'}
-    if (myString[myLoop] == 'f') {myTemp  = 'g'}
-    if (myString[myLoop] == 'g') {myTemp  = 'h'}
-    if (myString[myLoop] == 'h') {myTemp  = 'j'}
-    if (myString[myLoop] == 'j') {myTemp  = 'k'}
-    if (myString[myLoop] == 'k') {myTemp  = 'l'}
-    if (myString[myLoop] == 'l') {myTemp  = 'z'}
-    if (myString[myLoop] == 'z') {myTemp  = 'x'}
-    if (myString[myLoop] == 'x') {myTemp  = 'c'}
-    if (myString[myLoop] == 'c') {myTemp  = 'v'}
-    if (myString[myLoop] == 'v') {myTemp  = 'b'}
-    if (myString[myLoop] == 'b') {myTemp  = 'n'}
-    if (myString[myLoop] == 'n') {myTemp  = 'm'}
-    if (myString[myLoop] == 'm') {myTemp  = 'q'}
-  }
-  document.getElementById('myArea02').value = myString.join('')
-}"><br><br>
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            myTemp = myString[myLoop];
+            let charCode = myTemp.charCodeAt(0);
+            if ((charCode >= 32 && charCode <= 126)) {
+                charCode = ((charCode - 32 + 5) % 95) + 32;
+            }
+            encrypted += String.fromCharCode(charCode);
+        }
 
+        document.getElementById('myArea02').value = encrypted;
+    }"><br><br>
 
-<textarea id="myArea02" rows=4 cols=70></textarea><br>
+    <textarea id="myArea02" rows="4" cols="70"></textarea><br> 
 
-<input type=button value="decrypt" onclick="{
-  alert('Sorry, you have to do this!')
-}"><br><br>
+    <input type="button" value="Decrypt" onclick="{
+        let myTemp = '';
+        let myString = document.getElementById('myArea02').value.split('');
+        let decrypted = '';
 
-<textarea id="myArea03" rows=4 cols=70></textarea><br>
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            myTemp = myString[myLoop];
+            let charCode = myTemp.charCodeAt(0);
+            if ((charCode >= 32 && charCode <= 126)) {
+                charCode = ((charCode - 32 - 5 + 95) % 95) + 32;
+            }
+            decrypted += String.fromCharCode(charCode);
+        }
+
+        document.getElementById('myArea03').value = decrypted;
+    }"><br><br>
+
+    <textarea id="myArea03" rows="4" cols="70"></textarea><br>
+</body>
