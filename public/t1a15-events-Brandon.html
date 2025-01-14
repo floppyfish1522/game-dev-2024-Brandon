@@ -26,45 +26,6 @@
     </style>
 </head>
 <body>
-    <h1 align="center">t2a06-spy-name.html</h1>
-
-    <textarea id="myArea01" rows="4" cols="70">Hello how are you?</textarea><br> 
-
-    <input type="button" value="Encrypt" onclick="{
-        let myTemp = '';
-        let myString = document.getElementById('myArea01').value.split('');
-        let encrypted = '';
-
-        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-            myTemp = myString[myLoop];
-            let charCode = myTemp.charCodeAt(0);
-            if ((charCode >= 32 && charCode <= 126)) { // Encrypt for printable ASCII range
-                charCode = ((charCode - 32 + 5) % 95) + 32;
-            }
-            encrypted += String.fromCharCode(charCode);
-        }
-
-        document.getElementById('myArea02').value = encrypted;
-    }"><br><br>
-
-    <textarea id="myArea02" rows="4" cols="70"></textarea><br> 
-
-    <input type="button" value="Decrypt" onclick="{
-        let myTemp = '';
-        let myString = document.getElementById('myArea02').value.split('');
-        let decrypted = '';
-
-        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-            myTemp = myString[myLoop];
-            let charCode = myTemp.charCodeAt(0);
-            if ((charCode >= 32 && charCode <= 126)) { // Decrypt for printable ASCII range
-                charCode = ((charCode - 32 - 5 + 95) % 95) + 32;
-            }
-            decrypted += String.fromCharCode(charCode);
-        }
-
-        document.getElementById('myArea03').value = decrypted;
-    }"><br><br>
 
     <textarea id="myArea03" rows="4" cols="70"></textarea><br><br>
 
