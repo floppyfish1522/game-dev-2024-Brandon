@@ -1,156 +1,104 @@
-<h1 align=center>t1a15-events-Brandon</h1>
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(14, 40px);
-            gap: 5px;
-            margin-bottom: 20px;
-        }
         .key {
+            display: inline-block;
             width: 40px;
             height: 40px;
-            border: 1px solid black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f0f0f0;
-        }
-        .mouse {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .mouse-button {
-            width: 60px;
-            height: 30px;
-            border: 1px solid black;
             margin: 5px;
+            text-align: center;
+            line-height: 40px;
+            border: 1px solid #000;
+            border-radius: 5px;
             background-color: #f0f0f0;
+            font-size: 16px;
+        }
+
+        .key.active {
+            background-color: yellow;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 500px;
         }
     </style>
 </head>
-    <div class="keyboard">
-      <div class="key">Esc</div>
-        <!-- Add more keys as needed -->
-      <div class="key">F1</div>
-      <div class="key">F2</div>
-      <div class="key">F3</div>
-      <div class="key">F4</div>
-      <div class="key">F5</div>
-      <div class="key">F6</div>
-      <div class="key">F7</div>
-      <div class="key">F8</div>
-      <div class="key">F9</div>
-      <div class="key">F10</div>
-      <div class="key">F11</div>
-      <div class="key">F12</div>
-      <Br>
-      <div class="key">`</div>
-      <div class="key">1</div>
-      <div class="key">2</div>
-      <div class="key">3</div>
-      <div class="key">4</div>
-      <div class="key">5</div>
-      <div class="key">6</div>
-      <div class="key">7</div>
-      <div class="key">8</div>
-      <div class="key">9</div>
-      <div class="key">0</div>
-      <div class="key">-</div>
-      <div class="key">=</div>
-      <div class="key">Backspace</div>
-      
-      <div class="key">Tab</div>
-      <div class="key">Q</div>
-      <div class="key">W</div>
-      <div class="key">E</div>
-      <div class="key">R</div>
-      <div class="key">T</div>
-      <div class="key">Y</div>
-      <div class="key">U</div>
-      <div class="key">I</div>
-      <div class="key">O</div>
-      <div class="key">P</div>
-      <div class="key">[</div>
-      <div class="key">]</div>
-      <div class="key">\</div>
+<body>
+    <h1 align="center">t2a06-spy-name.html</h1>
 
-        <div class="key">Caps Lock</div>
-        <div class="key">A</div>
-        <div class="key">S</div>
-        <div class="key">D</div>
-        <div class="key">F</div>
-        <div class="key">G</div>
-        <div class="key">H</div>
-        <div class="key">J</div>
-        <div class="key">K</div>
-        <div class="key">L</div>
-        <div class="key">;</div>
-        <div class="key">'</div>
-        <div class="key">Enter</div>
-        <br><br>
-        
-        <div class="key">Shift</div>
-      <div class="key">Z</div>
-      <div class="key">X</div>
-      <div class="key">C</div>
-      <div class="key">V</div>
-      <div class="key">B</div>
-      <div class="key">N</div>
-      <div class="key">M</div>
-      <div class="key">,</div>
-      <div class="key">.</div>
-      <div class="key">/</div>
-      <div class="key">Shift</div>
-        <div class="key"></div>
-    <br><br>
+    <textarea id="myArea01" rows="4" cols="70">Hello how are you?</textarea><br> 
 
-        <div class="key">Ctrl</div>
-        <div class="key">Fn</div>
-      <div class="key">Alt</div>
-      <div class="key">Space</div>
-      <div class="key">Alt</div>
-      <div class="key">Fn</div>
-        <div class="key">Ctrl</div>
-     
-    </div>
-    <div class="mouse">
-        <div class="mouse-button">Left Button</div>
-        <div class="mouse-button">Right Button</div>
-        <div class="mouse-button">Scroll Wheel</div>
-    </div>
+    <input type="button" value="Encrypt" onclick="{
+        let myTemp = '';
+        let myString = document.getElementById('myArea01').value.split('');
+        let encrypted = '';
+
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            myTemp = myString[myLoop];
+            let charCode = myTemp.charCodeAt(0);
+            if ((charCode >= 32 && charCode <= 126)) { // Encrypt for printable ASCII range
+                charCode = ((charCode - 32 + 5) % 95) + 32;
+            }
+            encrypted += String.fromCharCode(charCode);
+        }
+
+        document.getElementById('myArea02').value = encrypted;
+    }"><br><br>
+
+    <textarea id="myArea02" rows="4" cols="70"></textarea><br> 
+
+    <input type="button" value="Decrypt" onclick="{
+        let myTemp = '';
+        let myString = document.getElementById('myArea02').value.split('');
+        let decrypted = '';
+
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            myTemp = myString[myLoop];
+            let charCode = myTemp.charCodeAt(0);
+            if ((charCode >= 32 && charCode <= 126)) { // Decrypt for printable ASCII range
+                charCode = ((charCode - 32 - 5 + 95) % 95) + 32;
+            }
+            decrypted += String.fromCharCode(charCode);
+        }
+
+        document.getElementById('myArea03').value = decrypted;
+    }"><br><br>
+
+    <textarea id="myArea03" rows="4" cols="70"></textarea><br><br>
+
+    <div class="keyboard" id="keyboard"></div>
 
     <script>
-        function setup() {
-            createCanvas(800, 600);
-            drawKeyboard();
-            drawMouse();
+        // Create keyboard dynamically for printable ASCII characters
+        const keyboardContainer = document.getElementById('keyboard');
+
+        for (let i = 32; i <= 126; i++) {
+            const key = document.createElement('div');
+            key.classList.add('key');
+            key.textContent = String.fromCharCode(i);
+            key.id = `key-${i}`;
+            keyboardContainer.appendChild(key);
         }
 
-        function drawKeyboard() {
-            fill(200);
-            rect(50, 50, 700, 200);
-            fill(0);
-            textSize(16);
-            textAlign(CENTER, CENTER);
-            text('Keyboard', 400, 150);
-        }
+        // Highlight key on keypress
+        document.addEventListener('keydown', (event) => {
+            const keyId = `key-${event.key.charCodeAt(0)}`;
+            const keyElement = document.getElementById(keyId);
+            if (keyElement) {
+                keyElement.classList.add('active');
+            }
+        });
 
-        function drawMouse() {
-            fill(200);
-            rect(350, 300, 100, 200);
-            fill(0);
-            textSize(16);
-            textAlign(CENTER, CENTER);
-            text('Mouse', 400, 400);
-        }
+        // Remove highlight on keyup
+        document.addEventListener('keyup', (event) => {
+            const keyId = `key-${event.key.charCodeAt(0)}`;
+            const keyElement = document.getElementById(keyId);
+            if (keyElement) {
+                keyElement.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
-
