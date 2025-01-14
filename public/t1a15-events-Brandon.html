@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body onmousemove="{
+  document.getElementById('myDiv01').innerHTML = 'Mouse Position - x: ' + event.clientX + ', y: ' + event.clientY;
+}" onkeydown="{
+  document.getElementById('myDiv01').innerHTML = 'Key Pressed: ' + event.key;
+}">
+
+  <h1 align="center">t1a15-events-Brandon</h1>
+
+  <b>Input:</b>
+  <input type="text" id="myFirstName" value="Brandon" onblur="{
+    document.getElementById('myDiv01').innerHTML = 'Input field lost focus';
+  }"><br><br>
+
+  <input type="button" value="Show on page" onclick="{
+    document.getElementById('myDiv01').innerHTML = 'Button clicked!';
+  }"><br><br>
+
+  <div id="myDiv01" onmouseover="{
+    document.getElementById('myDiv01').innerHTML = 'Mouse is over this div';
+  }" onmouseout="{
+    document.getElementById('myDiv01').innerHTML = 'Mouse left this div';
+  }">Hover over me!</div><br><br>
+
+  <input type="checkbox" id="myCheckbox" onchange="{
+    document.getElementById('myDiv01').innerHTML = 'Checkbox state: ' + (event.target.checked ? 'Checked' : 'Unchecked');
+  }"> Check me!<br><br>
+
+  <select id="mySelect" onchange="{
+    document.getElementById('myDiv01').innerHTML = 'Selected option: ' + event.target.value;
+  }">
+    <option value="Option 1">Option 1</option>
+    <option value="Option 2">Option 2</option>
+    <option value="Option 3">Option 3</option>
+  </select><br><br>
+
+  <button ondblclick="{
+    document.getElementById('myDiv01').innerHTML = 'Button double-clicked!';
+  }">Double Click Me!</button>
+
+</body>
+</html>
